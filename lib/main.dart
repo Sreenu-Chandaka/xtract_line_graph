@@ -1,209 +1,112 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'dart:async';
+import 'dart:math' as math;
 
-
-
-void main(){
+void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
-  }
-}
-
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black12,
-      appBar: AppBar(title: const Text('Line Chart'), centerTitle: true, backgroundColor: Colors.black12,),
-      body:
-      SingleChildScrollView(
-        child:
-        Container(
-          color: Colors.black12,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: LineChartWidget(),
-        ),
+      theme: ThemeData(
+        // is not restarted.
+        primarySwatch: Colors.blue,
       ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
-
-class Titles{
-  static getTitleData()=>FlTitlesData(
-    show: true,
-    leftTitles: AxisTitles(
-      sideTitles: SideTitles(
-      showTitles: true,
-      // getTextStyles: (value) => const TextStyle(
-      //   color: Colors.grey,
-      //   fontWeight: FontWeight.bold,fontSize: 13,
-      // ),
-      getTitlesWidget: (value,meta){
-        switch (value.toInt()){
-          case 10000:
-            return Text("10k",style: TextStyle(color: Colors.white),) ;
-          case 20000:
-            return Text("20k") ;
-          case 30000:
-            return Text("30k") ;
-          // case 40000:
-          //   return Text("40k") ;
-          // case 50000:
-          //   return Text("50k") ;
-          // case 60000:
-          //   return Text("60k") ;
-          // case 70000:
-          //   return Text("70k") ;
-        }
-        return Container();
-        
-     
-      },
-      reservedSize:  35,
-    
-    )
-    ),
-    bottomTitles: AxisTitles(
-      sideTitles: 
-SideTitles(
-      showTitles: true,
-      reservedSize: 35,
-      getTitlesWidget: (value, meta) {
-switch (value.toInt()){
-          case 20:
-            return Text("2020",style: TextStyle(color: Colors.white),);
-          case 50:
-            return Text("2021",style: TextStyle(color: Colors.white),);
-          case 90:
-            return Text("2022",style: TextStyle(color: Colors.white),);
-      }
-      // getTextStyles: (value) => const TextStyle( fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
-    
-  return Container();
-  },
   
- 
-     
-    ),
-     
-    
-    )
-  );
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
+class _MyHomePageState extends State<MyHomePage> {
+  late List<LiveData> chartData;
+  late ChartSeriesController _chartSeriesController;
 
-
-
-
-
-
-
-
-
-
-
-class LineChartWidget extends StatelessWidget {
-  final List<Color> gradiantColors = [
-    Colors.redAccent,
-    Colors.orangeAccent
-  ];
-
-  LineChartWidget({super.key});
+  @override
+  void initState() {
+    chartData = getChartData();
+    Timer.periodic(const Duration(seconds: 1), updateDataSource);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom:64.0),
-      child: LineChart(
-        
-        LineChartData(
-          titlesData: Titles.getTitleData(),
-          minX: 0,
-          maxX: 100,
-          minY: 0,
-          maxY: 70000,
-         
-          gridData: FlGridData(
-            show: true,
-            getDrawingHorizontalLine: (value){
-              return FlLine(
-                color: Colors.grey[800],
-                strokeWidth: 1
-              );
+    return SafeArea(
+        child: Scaffold(
+            body: SfCartesianChart(
+                series: <LineSeries<LiveData, int>>[
+          LineSeries<LiveData, int>(
+            onRendererCreated: (ChartSeriesController controller) {
+              _chartSeriesController = controller;
             },
-          ),
-          borderData: FlBorderData(
-            show: true,
-            border: Border.all(color: Colors.grey[800]!, width: 2)
-          ),
-          lineBarsData: [
-            LineChartBarData(
-              spots: [
-                const FlSpot(0,10000),
-                const FlSpot(5,50000),
-                const FlSpot(10,20000),
-                const FlSpot(15,40000),
-                const FlSpot(20,30000),
-                const FlSpot(25,60000),
-                const FlSpot(30,40000),
-                const FlSpot(35,30000),
-                const FlSpot(40,40000),
-                const FlSpot(45,50000),
-                const FlSpot(50,30000),
-                const FlSpot(55,20000),
-                const FlSpot(60,60000),
-                const FlSpot(65,20000),
-                const FlSpot(70,40000),
-                const FlSpot(75,30000),
-                const FlSpot(80,20000),
-                const FlSpot(85,50000),
-                
-                
-              ],
-              isCurved: true,
-              color: Colors.white,
-              barWidth: 3,
-              belowBarData: BarAreaData(
-                show: false,
-                color: Colors.orangeAccent
-              )
-      
-            )
-          ]
-      
-        )
-      ),
-    );
+            dataSource: chartData,
+            color: const Color.fromRGBO(192, 108, 132, 1),
+            xValueMapper: (LiveData sales, _) => sales.time,
+            yValueMapper: (LiveData sales, _) => sales.speed,
+          )
+        ],
+                primaryXAxis: const NumericAxis(
+                    majorGridLines: MajorGridLines(width: 0),
+                    edgeLabelPlacement: EdgeLabelPlacement.shift,
+                    interval: 3,
+                    title: AxisTitle(text: 'Time (seconds)')),
+                primaryYAxis: const NumericAxis(
+                    axisLine: AxisLine(width: 0),
+                    majorTickLines: MajorTickLines(size: 0),
+                    title: AxisTitle(text: 'Internet speed (Mbps)')))));
+  }
+
+  int time = 19;
+  void updateDataSource(Timer timer) {
+    chartData.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
+    chartData.removeAt(0);
+    _chartSeriesController.updateDataSource(
+        addedDataIndex: chartData.length - 1, removedDataIndex: 0);
+  }
+
+  List<LiveData> getChartData() {
+    return <LiveData>[
+      LiveData(0, 42),
+      LiveData(1, 47),
+      LiveData(2, 43),
+      LiveData(3, 49),
+      LiveData(4, 54),
+      LiveData(5, 41),
+      LiveData(6, 58),
+      LiveData(7, 51),
+      LiveData(8, 98),
+      LiveData(9, 41),
+      LiveData(10, 53),
+      LiveData(11, 72),
+      LiveData(12, 86),
+      LiveData(13, 52),
+      LiveData(14, 94),
+      LiveData(15, 92),
+      LiveData(16, 86),
+      LiveData(17, 72),
+      LiveData(18, 94)
+    ];
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+class LiveData {
+  LiveData(this.time, this.speed);
+  final int time;
+  final num speed;
+}
