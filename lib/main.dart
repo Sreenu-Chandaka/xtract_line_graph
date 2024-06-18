@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -7,6 +8,7 @@ import 'package:xtract/live_data_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
   await Supabase.initialize(
     url: "https://jdhsuxetjdzwdznipbvm.supabase.co",
@@ -51,11 +53,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late GraphProvider graphProvider;
+  late double _deviceHeight;
+  late double _deviceWidth;
 
   @override
   void initState() {
     graphProvider=Provider.of(context,listen: false);
     super.initState();
+   
+    
+    
     Future.delayed(const Duration(milliseconds: 320), () {
       graphProvider.getGraph();
     });
@@ -63,26 +70,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _deviceHeight=MediaQuery.of(context).size.height;
+    _deviceWidth=MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(onPressed: (){
+            graphProvider.addData(
+              time: 300,
+              speed: 55,
+              success: (){
+
+            }, failure: (){});
+          }, icon: Icon(Icons.add,size: 24,))
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding:  EdgeInsets.only(left:24.0,right: _deviceHeight*0.5,bottom: 8),
         child: Consumer<GraphProvider>(
           builder: (context, graphProvider, child) {
             return StreamBuilder<List<LiveData>>(
               stream: graphProvider.sGraphs,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No data available'));
                 }
 
                 return SfCartesianChart(
+                  onDataLabelRender: (dataLabelArgs) {
+                    
+                  },
                   series: <LineSeries<LiveData, int>>[
                     LineSeries<LiveData, int>(
                       dataSource: snapshot.data!,
