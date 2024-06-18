@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -78,8 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(onPressed: (){
             graphProvider.addData(
-              time: 300,
-              speed: 55,
+              time: 150,
+              speed: 25,
               success: (){
 
             }, failure: (){});
@@ -87,37 +89,58 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Padding(
-        padding:  EdgeInsets.only(left:24.0,right: _deviceHeight*0.5,bottom: 8),
-        child: Consumer<GraphProvider>(
-          builder: (context, graphProvider, child) {
-            return StreamBuilder<List<LiveData>>(
-              stream: graphProvider.sGraphs,
-              builder: (context, snapshot) {
-                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No data available'));
-                }
+        padding: const EdgeInsets.only(left: 24.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          
+          children: [
+            Expanded(
+              flex: 3,
+              child: Consumer<GraphProvider>(
+                builder: (context, graphProvider, child) {
+                  return StreamBuilder<List<LiveData>>(
+                    stream: graphProvider.sGraphs,
+                    builder: (context, snapshot) {
+                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No data available'));
+                      }
+                          
+                      return SfCartesianChart(
+                        onDataLabelRender: (dataLabelArgs) {
+                          
+                        },
+                        series: <LineSeries<LiveData, int>>[
+                          LineSeries<LiveData, int>(
+                            dataSource: snapshot.data!,
+                            xValueMapper: (LiveData data, _) => data.time,
+                            yValueMapper: (LiveData data, _) => data.speed,
+                          )
+                        ],
+                        primaryXAxis: const NumericAxis(
+                          title: AxisTitle(text: 'Time (seconds)'),
+                        ),
+                        primaryYAxis: const NumericAxis(
+                          title: AxisTitle(text: 'Internet speed (Mbps)'),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            Expanded(flex: 1,child: Container(
+              child: Column(
+                children: [
+                  Text("sreenu"),
+                  Text("sreenu"),
+                  Text("sreenu"),
+                  Text("sreenu"),
+                  Text("sreenu"),
 
-                return SfCartesianChart(
-                  onDataLabelRender: (dataLabelArgs) {
-                    
-                  },
-                  series: <LineSeries<LiveData, int>>[
-                    LineSeries<LiveData, int>(
-                      dataSource: snapshot.data!,
-                      xValueMapper: (LiveData data, _) => data.time,
-                      yValueMapper: (LiveData data, _) => data.speed,
-                    )
-                  ],
-                  primaryXAxis: const NumericAxis(
-                    title: AxisTitle(text: 'Time (seconds)'),
-                  ),
-                  primaryYAxis: const NumericAxis(
-                    title: AxisTitle(text: 'Internet speed (Mbps)'),
-                  ),
-                );
-              },
-            );
-          },
+                ],
+              ),
+            ))
+          ],
         ),
       ),
     );
