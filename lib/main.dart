@@ -1,32 +1,40 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'dart:async';
-import 'dart:math' as math;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: "https://jdhsuxetjdzwdznipbvm.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkaHN1eGV0amR6d2R6bmlwYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg2OTE1NjMsImV4cCI6MjAzNDI2NzU2M30.kFeVsszukI3fEJw5Fk1olQ_VGW51EXG59Ml01u8WjDU",
+  );
+
+  runApp(const MyApp());
 }
 
+final supabase = Supabase.instance.client;
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -35,78 +43,81 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late List<int> timeList;
+  late List<int> speedList;
   late List<LiveData> chartData;
-  late ChartSeriesController _chartSeriesController;
 
   @override
   void initState() {
-    chartData = getChartData();
-    Timer.periodic(const Duration(seconds: 1), updateDataSource);
     super.initState();
+    timeList = [];
+    speedList = [];
+    chartData = [];
+    fetchDataAndBuildChart();
+  }
+
+  Future<void> fetchDataAndBuildChart() async {
+    await getGraphData();
+    setState(() {
+      chartData = getChartData(timeList, speedList);
+    });
+  }
+
+  Future<void> getGraphData() async {
+    final response = await supabase.from('graph_table').select('time, speed');
+
+    timeList.clear();
+    speedList.clear();
+
+    for (var row in response as List<dynamic>) {
+      timeList.add(row['time'] as int);
+      speedList.add(row['speed'] as int);
+    }
+  }
+
+  List<LiveData> getChartData(List<int> timeList, List<int> speedList) {
+    List<LiveData> chartData = [];
+
+    int minLength = timeList.length < speedList.length ? timeList.length : speedList.length;
+
+    for (int i = 0; i < minLength; i++) {
+      chartData.add(LiveData(timeList[i], speedList[i]));
+    }
+
+    return chartData;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            body: SfCartesianChart(
-                series: <LineSeries<LiveData, int>>[
-          LineSeries<LiveData, int>(
-            onRendererCreated: (ChartSeriesController controller) {
-              _chartSeriesController = controller;
-            },
-            dataSource: chartData,
-            color: const Color.fromRGBO(192, 108, 132, 1),
-            xValueMapper: (LiveData sales, _) => sales.time,
-            yValueMapper: (LiveData sales, _) => sales.speed,
-          )
-        ],
-                primaryXAxis: const NumericAxis(
-                    majorGridLines: MajorGridLines(width: 0),
-                    edgeLabelPlacement: EdgeLabelPlacement.shift,
-                    interval: 3,
-                    title: AxisTitle(text: 'Time (seconds)')),
-                primaryYAxis: const NumericAxis(
-                    axisLine: AxisLine(width: 0),
-                    majorTickLines: MajorTickLines(size: 0),
-                    title: AxisTitle(text: 'Internet speed (Mbps)')))));
-  }
-
-  int time = 19;
-  void updateDataSource(Timer timer) {
-    chartData.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
-    chartData.removeAt(0);
-    _chartSeriesController.updateDataSource(
-        addedDataIndex: chartData.length - 1, removedDataIndex: 0);
-  }
-
-  List<LiveData> getChartData() {
-    return <LiveData>[
-      LiveData(0, 42),
-      LiveData(1, 47),
-      LiveData(2, 43),
-      LiveData(3, 49),
-      LiveData(4, 54),
-      LiveData(5, 41),
-      LiveData(6, 58),
-      LiveData(7, 51),
-      LiveData(8, 98),
-      LiveData(9, 41),
-      LiveData(10, 53),
-      LiveData(11, 72),
-      LiveData(12, 86),
-      LiveData(13, 52),
-      LiveData(14, 94),
-      LiveData(15, 92),
-      LiveData(16, 86),
-      LiveData(17, 72),
-      LiveData(18, 94)
-    ];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SfCartesianChart(
+          series: <LineSeries<LiveData, int>>[
+            LineSeries<LiveData, int>(
+              dataSource: chartData,
+              xValueMapper: (LiveData data, _) => data.time,
+              yValueMapper: (LiveData data, _) => data.speed,
+            )
+          ],
+          primaryXAxis: const NumericAxis(
+            title: AxisTitle(text: 'Time (seconds)'),
+          ),
+          primaryYAxis: const NumericAxis(
+            title: AxisTitle(text: 'Internet speed (Mbps)'),
+          ),
+        ),
+      ),
+    );
   }
 }
 
 class LiveData {
-  LiveData(this.time, this.speed);
   final int time;
-  final num speed;
+  final int speed;
+
+  LiveData(this.time, this.speed);
 }
