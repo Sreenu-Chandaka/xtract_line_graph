@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:xtract/live_data_model.dart';
+import 'package:xtract/model/live_data_model.dart';
 
 // Abstract class defining the contract
 abstract class IGraphRepository {

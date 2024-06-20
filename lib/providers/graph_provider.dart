@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:xtract/live_data_model.dart';
-import 'graph_repository.dart';
+import 'package:xtract/model/live_data_model.dart';
+import 'repo/graph_repository.dart';
 
 class GraphProvider extends ChangeNotifier {
   final _repo = GraphRepository();
