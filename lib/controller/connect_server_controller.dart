@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:xtract/model/message_model.dart';
 
 import 'mqtt_controller.dart';
 
@@ -15,7 +16,7 @@ class ConnectServerController extends GetxController {
 
   var brokerConnected = false.obs;
   var receivedMessage = ''.obs;
-  var messageList = [].obs;
+  var messageList =<MessageResponse>[].obs;
   var mqttController = MQTTController();
 
   
@@ -68,6 +69,8 @@ class ConnectServerController extends GetxController {
     // Handle the received message here
     debugPrint('Received message in Dashboard: $message');
     // receivedMessage.value = '$topic: $message';
+    receivedMessage.value = '${message.topic}: ${message.message}';
     messageList.add(message);
+    
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xtract/controller/connect_server_controller.dart';
 
+import '../widgets/message_receiver_card.dart';
+
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
 
@@ -18,10 +20,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     super.initState();
     _scrollController = ScrollController();
     controller = Get.put(ConnectServerController());
-    
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -30,41 +29,31 @@ class _MessagesScreenState extends State<MessagesScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: const Text("Topic"),
+        actions: [],
       ),
-      body: Obx(
-        () { 
-          var reversedMessages = controller.messageList.reversed.toList();
-          return 
-          CustomScrollView(
-         reverse: true,
+      body: Obx(() {
+        var reversedMessages = controller.messageList.reversed.toList();
+
+        return CustomScrollView(
+          reverse: true,
           controller: _scrollController,
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 18.0),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    return Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.all(10),
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: Text(
-                      reversedMessages[index].toString(),
-                        style: const TextStyle(fontSize: 16),
-                      ),
+                    return MsgReceiverCard(
+                      message: reversedMessages[index],
                     );
                   },
-                  childCount:  reversedMessages.length,
+                  childCount: reversedMessages.length,
                 ),
               ),
             ),
           ],
-        );}
-      ),
+        );
+      }),
     );
   }
 }

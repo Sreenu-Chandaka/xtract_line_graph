@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
+import '../model/message_model.dart';
 import 'connect_server_controller.dart';  // Adjust import as necessary
 
 class MQTTController {
@@ -123,14 +123,25 @@ class MQTTController {
 
   Future<void> disconnect() async => mqttClient!.disconnect();
 
-  void startListeningMessages() {
-    mqttClient!.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) async {
-      final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
-      final String receivedMessage =
-          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-      ConnectServerController connectServerController = Get.find<ConnectServerController>();
-      dynamic object = {"topic": c[0].topic, "message": receivedMessage};
-      connectServerController.handleMessage(json.encode(object));
-    });
-  }
+ void startListeningMessages() {
+  mqttClient!.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) async {
+    final String topic = c[0].topic;
+    final MqttPublishMessage payload = c[0].payload as MqttPublishMessage;
+    final MessageResponse message = MessageResponse.fromPayload(topic, payload);
+
+    // Displaying topic and message separately
+    print("Topic: ${message.topic}");
+    print("Message: ${message.message}");
+
+    // Pass to controller
+    ConnectServerController connectServerController = Get.find<ConnectServerController>();
+    connectServerController.handleMessage(message);
+  });
 }
+
+
+
+}
+
+
+
