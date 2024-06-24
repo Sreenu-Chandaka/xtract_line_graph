@@ -62,7 +62,7 @@ class ConnectServerController extends GetxController {
 
   void unSubscribeToTopic() {
     mqttController.unSubscribeToMQTT(topic: topicController.text);
-    topicController.clear();
+    
   }
 
   void handleMessage(dynamic message) {

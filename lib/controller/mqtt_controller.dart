@@ -65,7 +65,7 @@ class MQTTController {
   }
 
   Future onConnected() async {
-    debugPrint("Connected successfully");
+    Fluttertoast.showToast(msg: 'Connected');
     return true;
   }
 
@@ -81,7 +81,7 @@ class MQTTController {
 
   Future onDisconnected() async {
     debugPrint("Disconnected");
-    return true;
+   Fluttertoast.showToast(msg: 'Disconnected');
   }
 
   Future publishMessage({
