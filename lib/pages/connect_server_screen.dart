@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:xtract/controller/connect_server_controller.dart';
 import 'package:xtract/pages/messages_screen.dart';
+import 'package:xtract/widgets/custom_methods.dart';
 
 class ConnectServer extends StatefulWidget {
   const ConnectServer({super.key});
@@ -62,19 +63,19 @@ dispose(){
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        _customTextField(
+                          CustomMethods.customTextField(
                           labelText: 'MQTT Server Address',
                           textEditingController: controller.hostNameController,
                         ),
                         const SizedBox(width: 30),
-                        _customTextField(
+                          CustomMethods.customTextField(
                           labelText: 'MQTT Server Port',
                           textEditingController:
                               controller.serverPortController,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(20),
-                          child: _customButton(
+                          child:  CustomMethods.customButton(
                             onPressed: () => controller.connectToBroker(),
                             buttonText: controller.brokerConnected.isTrue
                                 ? 'Disconnect'
@@ -99,19 +100,19 @@ dispose(){
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _customTextField(
+                    CustomMethods.customTextField(
                       labelText: 'Topic',
                       textEditingController: controller.topicController,
                     ),
                     const SizedBox(width: 50),
-                    _customButton(
+                     CustomMethods.customButton(
                       onPressed: () { controller.subScribeToTopic();
                       Navigator.push(context, MaterialPageRoute(builder: (context)=> MessagesScreen()));
                       },
                       buttonText: 'Subscribe',
                     ),
                     const SizedBox(width: 100),
-                    _customButton(
+                     CustomMethods.customButton(
                       onPressed: () => controller.unSubscribeToTopic(),
                       buttonText: 'Unsubscribe',
                     ),
@@ -128,17 +129,17 @@ dispose(){
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _customTextField(
+                      CustomMethods.customTextField(
                       labelText: 'Publish Topic',
                       textEditingController: controller.publishTopicController,
                     ),
                     const SizedBox(width: 30),
-                    _customTextField(
+                      CustomMethods.customTextField(
                       labelText: 'Publish Message',
                       textEditingController: controller.messageController,
                     ),
                     const SizedBox(width: 50),
-                    _customButton(
+                    CustomMethods.customButton(
                       onPressed: () => controller.publishMessage(),
                       buttonText: 'Publish',
                     ),
@@ -170,50 +171,12 @@ dispose(){
               ),
             ),
             const SizedBox(height: 10),
-            _customButton(
+           CustomMethods.customButton(
               onPressed: () => controller.messageList.clear(),
               buttonText: 'Clear Messages',
             ),
             const SizedBox(height: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  _customButton({required VoidCallback onPressed, required String buttonText}) {
-    return MaterialButton(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-        vertical: 20,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      color: Colors.teal.shade100,
-      onPressed: onPressed,
-      child: Text(buttonText),
-    );
-  }
-
-  _customTextField(
-      {required String labelText,
-      required TextEditingController textEditingController}) {
-    return Container(
-      width: 250,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(89, 178, 212, 223),
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      child: TextFormField(
-        controller: textEditingController,
-        decoration: InputDecoration(
-          labelText: labelText,
-          labelStyle: const TextStyle(color: Colors.black),
-          border: InputBorder.none, // Remove the default border
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         ),
       ),
     );

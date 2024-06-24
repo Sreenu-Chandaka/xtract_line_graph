@@ -91,7 +91,7 @@ class MsgReceiverCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                                 getDateAndTime(DateTime.now().toString()),
+                                 getDateAndTime(message.time.toString()),
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
