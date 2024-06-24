@@ -10,7 +10,7 @@ class ConnectServerController extends GetxController {
   var hostNameController = TextEditingController();
   var serverPortController = TextEditingController();
   
-  var topicController = TextEditingController();
+  
   var messageController = TextEditingController();
   var publishTopicController = TextEditingController();
 
@@ -56,12 +56,12 @@ class ConnectServerController extends GetxController {
     );
   }
 
-  void subScribeToTopic() {
-    mqttController.subscribeToMQTT(topic: topicController.text);
+  void subScribeToTopic({required String topic}) {
+    mqttController.subscribeToMQTT(topic: topic);
   }
 
-  void unSubscribeToTopic() {
-    mqttController.unSubscribeToMQTT(topic: topicController.text);
+  void unSubscribeToTopic({required String topic}) {
+    mqttController.unSubscribeToMQTT(topic: topic);
     
   }
 

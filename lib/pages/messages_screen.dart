@@ -6,7 +6,8 @@ import 'package:xtract/controller/connect_server_controller.dart';
 import '../widgets/message_receiver_card.dart';
 
 class MessagesScreen extends StatefulWidget {
-  const MessagesScreen({super.key});
+  final String topic;
+  const MessagesScreen({super.key, required this.topic});
 
   @override
   State<StatefulWidget> createState() => _MessagesScreenState();
@@ -21,6 +22,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     super.initState();
     _scrollController = ScrollController();
     controller = Get.put(ConnectServerController());
+    controller.subScribeToTopic(topic: widget.topic);
   }
 
   @override
@@ -38,17 +40,17 @@ class _MessagesScreenState extends State<MessagesScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BackButton(),
-                   Text("Topic"),
+                  const BackButton(),
+                   const Text("Topic"),
                     PopupMenuButton(
               surfaceTintColor: Colors.white,
                        
                         onSelected: (String value) {
               if(value=="subscribe"){
-                controller.subScribeToTopic();
+                controller.subScribeToTopic(topic: widget.topic);
               }
               else if(value=="unsubscribe"){
-                controller.unSubscribeToTopic();
+                controller.unSubscribeToTopic(topic: widget.topic);
               }
               else{
                controller.messageList.clear();
