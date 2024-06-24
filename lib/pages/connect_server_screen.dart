@@ -1,18 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:xtract/controller/connect_server_controller.dart';
+import 'package:xtract/pages/messages_screen.dart';
 
-class ConnectServer extends StatelessWidget {
+class ConnectServer extends StatefulWidget {
   const ConnectServer({super.key});
+
+  @override
+  State<ConnectServer> createState() => _ConnectServerState();
+}
+
+class _ConnectServerState extends State<ConnectServer> {
+   @override
+  void initState() {
+     super.initState();
+    SystemChrome.setPreferredOrientations([
+    
+      DeviceOrientation.portraitUp,
+  ]);
+   
+  }
+@override
+dispose(){
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+  
+  ]);
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(ConnectServerController());
     return Scaffold(
-      appBar: AppBar(title: const Text('MQTT Settings')),
+     appBar: AppBar(automaticallyImplyLeading: true,title: const Text('MQTT Settings',style: TextStyle(fontSize: 16)),),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            
             Obx(() {
               debugPrint(
                   'brokerConnected: ${controller.brokerConnected.value}');
@@ -38,7 +64,7 @@ class ConnectServer extends StatelessWidget {
                       children: [
                         _customTextField(
                           labelText: 'MQTT Server Address',
-                          textEditingController: controller.clientIdController,
+                          textEditingController: controller.hostNameController,
                         ),
                         const SizedBox(width: 30),
                         _customTextField(
@@ -79,7 +105,9 @@ class ConnectServer extends StatelessWidget {
                     ),
                     const SizedBox(width: 50),
                     _customButton(
-                      onPressed: () => controller.subScribeToTopic(),
+                      onPressed: () { controller.subScribeToTopic();
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MessagesScreen()));
+                      },
                       buttonText: 'Subscribe',
                     ),
                     const SizedBox(width: 100),

@@ -106,7 +106,7 @@ class MQTTController {
     print(topic);
     if (isConnectedToBroker()) {
       debugPrint('Subscribing to topic: $topic');
-      mqttClient!.subscribe(topic, MqttQos.exactlyOnce);
+      mqttClient!.subscribe(topic, MqttQos.atMostOnce);
     } else {
       debugPrint('Cannot subscribe, not connected to the broker.');
     }

@@ -9,7 +9,7 @@ import 'pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
   await Supabase.initialize(
     url: "https://jdhsuxetjdzwdznipbvm.supabase.co",

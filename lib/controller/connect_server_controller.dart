@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import 'mqtt_controller.dart';
 
 class ConnectServerController extends GetxController {
-  var clientIdController = TextEditingController();
+  var hostNameController = TextEditingController();
   var serverPortController = TextEditingController();
-  var passwordController = TextEditingController();
+  
   var topicController = TextEditingController();
   var messageController = TextEditingController();
   var publishTopicController = TextEditingController();
@@ -17,8 +18,9 @@ class ConnectServerController extends GetxController {
   var messageList = [].obs;
   var mqttController = MQTTController();
 
+  
   Future<void> connectToBroker() async {
-    if (clientIdController.text.isEmpty) {
+    if (hostNameController.text.isEmpty) {
       Fluttertoast.showToast(
         msg: 'Client Id should not be empty',
         gravity: ToastGravity.CENTER,
@@ -30,7 +32,7 @@ class ConnectServerController extends GetxController {
     } else {
       if (brokerConnected.isFalse) {
         mqttController.initializeAndConnect(
-          hostName: clientIdController.text,
+          hostName: hostNameController.text,
 
           keepAliveTime: 1000,
 

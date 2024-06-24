@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -25,8 +26,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+     super.initState();
+    SystemChrome.setPreferredOrientations([
+    
+      DeviceOrientation.landscapeLeft,
+  ]);
     graphProvider = Provider.of(context, listen: false);
-    super.initState();
+   
     _timeController=TextEditingController();
     _speedController=TextEditingController();
 
@@ -34,6 +40,16 @@ class _MyHomePageState extends State<MyHomePage> {
       graphProvider.getGraph();
     });
   }
+@override
+dispose(){
+  SystemChrome.setPreferredOrientations([
+   
+    DeviceOrientation.portraitUp,
+   
+  ]);
+  super.dispose();
+}
+  
 
   @override
   Widget build(BuildContext context) {
