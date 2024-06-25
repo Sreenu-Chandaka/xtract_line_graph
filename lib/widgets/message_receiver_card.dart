@@ -15,7 +15,8 @@ class MsgReceiverCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double kDefault = 16.0;
-    return Padding(
+    return 
+    Padding(
       padding: const EdgeInsets.only(top: kDefault * 1.4,left: 8.0),
       child: Column(
         children: [

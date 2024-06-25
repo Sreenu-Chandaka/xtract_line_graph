@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:xtract/controller/connect_server_controller.dart';
-
 import '../widgets/message_receiver_card.dart';
 
 class MessagesScreen extends StatefulWidget {
@@ -29,56 +27,48 @@ class _MessagesScreenState extends State<MessagesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-     
       body: Obx(() {
         var reversedMessages = controller.messageList.reversed.toList();
 
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top:32.0),
+              padding: const EdgeInsets.only(top: 32.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const BackButton(),
-                   Text(widget.topic),
-                    PopupMenuButton(
-              surfaceTintColor: Colors.white,
-                       
-                        onSelected: (String value) {
-              if(value=="subscribe"){
-                controller.subScribeToTopic(topic: widget.topic);
-              }
-              else if(value=="unsubscribe"){
-                controller.unSubscribeToTopic(topic: widget.topic);
-              }
-              else{
-               controller.messageList.clear();
-              }
-              
-              
-              
-                        },
-                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String >>[
-              const PopupMenuItem(
-                value: "subscribe",
-                child: Text('Subscribe'),
-              ),
-              const PopupMenuItem(
-                value: "unsubscribe",
-                child: Text("Unsubscribe"),
-              ),
-              const PopupMenuItem(
-                value: "clear",
-                child: Text("Clear"),
-              ),
-                        ],
+                  Text(widget.topic),
+                  PopupMenuButton(
+                    surfaceTintColor: Colors.white,
+                    onSelected: (String value) {
+                      if (value == "subscribe") {
+                        controller.subScribeToTopic(topic: widget.topic);
+                      } else if (value == "unsubscribe") {
+                        controller.unSubscribeToTopic(topic: widget.topic);
+                      } else {
+                        controller.messageList.clear();
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
+                      const PopupMenuItem(
+                        value: "subscribe",
+                        child: Text('Subscribe'),
                       ),
-              
+                      const PopupMenuItem(
+                        value: "unsubscribe",
+                        child: Text("Unsubscribe"),
+                      ),
+                      const PopupMenuItem(
+                        value: "clear",
+                        child: Text("Clear"),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            
             Expanded(
               child: CustomScrollView(
                 reverse: true,
