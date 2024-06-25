@@ -36,6 +36,8 @@ class _TopicsScreen extends State<TopicsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         centerTitle: true,
         automaticallyImplyLeading: true,
         title: const Text('Topics', style: TextStyle(fontSize: 20)),

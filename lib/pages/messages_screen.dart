@@ -37,45 +37,49 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 32.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const BackButton(),
-                  Text(
-                    widget.topic,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  PopupMenuButton(
-                    surfaceTintColor: Colors.white,
-                    onSelected: (String value) {
-                      if (value == "subscribe") {
-                        controller.subScribeToTopic(topic: widget.topic);
-                      } else if (value == "unsubscribe") {
-                        controller.unSubscribeToTopic(topic: widget.topic);
-                      } else {
-                        // Clear messages for this topic
-                        controller.messageMap[widget.topic]?.clear();
-                      }
-                    },
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      const PopupMenuItem(
-                        value: "subscribe",
-                        child: Text('Subscribe'),
-                      ),
-                      const PopupMenuItem(
-                        value: "unsubscribe",
-                        child: Text("Unsubscribe"),
-                      ),
-                      const PopupMenuItem(
-                        value: "clear",
-                        child: Text("Clear"),
-                      ),
-                    ],
-                  ),
-                ],
+            Container(
+              color: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 32.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const BackButton(color: Colors.white,),
+                    Text(
+                      widget.topic,
+                      style: const TextStyle(fontSize: 20,color: Colors.white,),
+                    ),
+                    PopupMenuButton(
+                      iconColor: Colors.white,
+                      surfaceTintColor: Colors.white,
+                      onSelected: (String value) {
+                        if (value == "subscribe") {
+                          controller.subScribeToTopic(topic: widget.topic);
+                        } else if (value == "unsubscribe") {
+                          controller.unSubscribeToTopic(topic: widget.topic);
+                        } else {
+                          // Clear messages for this topic
+                          controller.messageMap[widget.topic]?.clear();
+                        }
+                      },
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<String>>[
+                        const PopupMenuItem(
+                          value: "subscribe",
+                          child: Text('Subscribe'),
+                        ),
+                        const PopupMenuItem(
+                          value: "unsubscribe",
+                          child: Text("Unsubscribe"),
+                        ),
+                        const PopupMenuItem(
+                          value: "clear",
+                          child: Text("Clear"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -100,13 +104,13 @@ class _MessagesScreenState extends State<MessagesScreen> {
               ),
             ),
              Container(
-      padding: const EdgeInsets.only(
+              padding: const EdgeInsets.only(
           left: kDefault,
           right: kDefault,
           top: kDefault / 2,
           bottom: kDefault * 1.4),
-      color: Colors.white,
-      child: Row(
+              color: Colors.white,
+              child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
@@ -162,8 +166,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
             ),
           )
         ],
-      ),
-    )
+              ),
+            )
           ],
         );
       }),

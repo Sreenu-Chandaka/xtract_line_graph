@@ -34,6 +34,8 @@ class _ConnectServerState extends State<ConnectServer> {
     var controller = Get.put(ConnectServerController());
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         automaticallyImplyLeading: true,
         title: const Text('MQTT Settings', style: TextStyle(fontSize: 20)),
       ),
