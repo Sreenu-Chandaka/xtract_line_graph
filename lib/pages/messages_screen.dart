@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xtract/controller/connect_server_controller.dart';
@@ -58,7 +57,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         } else if (value == "unsubscribe") {
                           controller.unSubscribeToTopic(topic: widget.topic);
                         } else {
-                          // Clear messages for this topic
+                          
                           controller.messageMap[widget.topic]?.clear();
                         }
                       },
@@ -117,7 +116,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefault),
               decoration: BoxDecoration(
-                color: Color(0xFFF4F5F5),
+                color: const Color(0xFFF4F5F5),
                 // color: Colors.grey.withOpacity(.23),
                 borderRadius: BorderRadius.circular(kDefault),
               ),
@@ -134,7 +133,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         focusedBorder: InputBorder.none,
                         disabledBorder: InputBorder.none),
                   ),
-                Divider(),
+                const Divider(),
                   TextFormField(
                     controller:controller. messageController,
                   
