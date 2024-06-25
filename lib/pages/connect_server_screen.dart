@@ -103,63 +103,7 @@ class _ConnectServerState extends State<ConnectServer> {
                 ],
               );
             }),
-            // Uncomment if you want to include additional settings here
-            // const SizedBox(height: 20),
-            // SizedBox(
-            //   height: 100,
-            //   child: SingleChildScrollView(
-            //     scrollDirection: Axis.horizontal,
-            //     child: Row(
-            //       children: [
-            //         CustomMethods.customTextField(
-            //           labelText: 'Topic',
-            //           textEditingController: controller.topicController,
-            //         ),
-            //         const SizedBox(width: 50),
-            //         CustomMethods.customButton(
-            //           onPressed: () { 
-            //             controller.subScribeToTopic();
-            //             Navigator.push(context, MaterialPageRoute(builder: (context)=> MessagesScreen()));
-            //           },
-            //           buttonText: 'Subscribe',
-            //         ),
-            //         const SizedBox(width: 100),
-            //         CustomMethods.customButton(
-            //           onPressed: () => controller.unSubscribeToTopic(),
-            //           buttonText: 'Unsubscribe',
-            //         ),
-            //         const SizedBox(width: 100),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // const Divider(thickness: 1, color: Colors.grey),
-            // SizedBox(
-            //   height: 80,
-            //   child: SingleChildScrollView(
-            //     scrollDirection: Axis.horizontal,
-            //     child: Row(
-            //       children: [
-            //         CustomMethods.customTextField(
-            //           labelText: 'Publish Topic',
-            //           textEditingController: controller.publishTopicController,
-            //         ),
-            //         const SizedBox(width: 30),
-            //         CustomMethods.customTextField(
-            //           labelText: 'Publish Message',
-            //           textEditingController: controller.messageController,
-            //         ),
-            //         const SizedBox(width: 50),
-            //         CustomMethods.customButton(
-            //           onPressed: () => controller.publishMessage(),
-            //           buttonText: 'Publish',
-            //         ),
-            //         const SizedBox(width: 50),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
+        ],
         ),
       ),
     );
