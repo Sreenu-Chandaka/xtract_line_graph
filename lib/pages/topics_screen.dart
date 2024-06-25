@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:xtract/controller/topic_controller.dart';
 import 'package:xtract/pages/messages_screen.dart';
+import 'package:xtract/widgets/custom_methods.dart';
 
 class TopicsScreen extends StatefulWidget {
   const TopicsScreen({super.key});
@@ -11,7 +14,24 @@ class TopicsScreen extends StatefulWidget {
 }
 
 class _TopicsScreen extends State<TopicsScreen> {
-  List<String> listOfTopics = ["hs1", "ss1", "hs2"];
+  late TextEditingController _topicController;
+  late TextEditingController _editingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _topicController = TextEditingController();
+    _editingController = TextEditingController();
+    // Initialize the controller here
+    Get.put(TopicController());
+  }
+
+  @override
+  void dispose() {
+    _topicController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,20 +43,38 @@ class _TopicsScreen extends State<TopicsScreen> {
       floatingActionButton: FloatingActionButton.extended(
         foregroundColor: Colors.green,
         backgroundColor: Colors.white,
-          onPressed: () {},
-          label: const Row(
-            children: [Icon(Icons.add,size: 26,),Text("New",style: TextStyle(fontSize: 20),), ],
-          )),
-      body: ListView.builder(
-        itemCount: listOfTopics.length,
-        itemBuilder: (context, index) {
-          return topicCard(listOfTopics[index]);
+        onPressed: () {
+          _addTopicShowInputDialog(context);
+        },
+        label: const Row(
+          children: [
+            Icon(
+              Icons.add,
+              size: 26,
+            ),
+            Text(
+              "New",
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+      ),
+      body: GetX<TopicController>(
+        builder: (controller) {
+          return ListView.builder(
+            itemCount: controller.listOfTopics.length,
+            itemBuilder: (context, index) {
+              return topicCard(controller.listOfTopics[index]);
+            },
+          );
         },
       ),
     );
   }
 
   Widget topicCard(String topic) {
+    final TopicController controller = Get.find<TopicController>();
+
     const double kDefault = 16.0;
     return Padding(
       padding:
@@ -73,7 +111,12 @@ class _TopicsScreen extends State<TopicsScreen> {
               margin: const EdgeInsets.only(right: 8.0),
               child: PopupMenuButton<String>(
                 onSelected: (String value) {
-                  // Handle menu selection
+                  if (value == "edit") {
+                 _showEditDialog(context, topic);
+                  }
+                  if (value == "delete") {
+                    controller.deleteTopic(topic);
+                  }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem(
@@ -84,12 +127,100 @@ class _TopicsScreen extends State<TopicsScreen> {
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
+                  const PopupMenuItem(
+                    padding: EdgeInsets.only(left: 16),
+                    value: "delete",
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _addTopicShowInputDialog(BuildContext context) {
+    final TopicController controller = Get.find<TopicController>();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Topic'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CustomMethods.customTextField(
+                labelText: "Enter Topic",
+                textEditingController: _topicController,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Add'),
+              onPressed: () {
+                controller.addTopic(_topicController.text);
+                _topicController.clear();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                _topicController.clear();
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+ void _showEditDialog(BuildContext context, String initialTopic) {
+    final TopicController controller = Get.find<TopicController>();
+    _topicController.text = initialTopic; // Set initial text for editing
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Topic'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CustomMethods.customTextField(
+                labelText: "Edit Topic",
+                textEditingController: _topicController,
+                initialText: initialTopic,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Update'),
+              onPressed: () {
+                controller.updateTopic(initialTopic, _topicController.text);
+                _topicController.clear();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                _topicController.clear();
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
     );
   }
 }

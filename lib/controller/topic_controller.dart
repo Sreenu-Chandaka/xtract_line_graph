@@ -22,6 +22,9 @@ class TopicController extends GetxController {
       listOfTopics[index] = newTopic;
     }
   }
+ void deleteTopic(String topic) {
+    listOfTopics.remove(topic);
+  }
 
   // Method to update the topic state
   void updateTopicState(bool value) {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomMethods{
-
- static customButton({required VoidCallback onPressed, required String buttonText}) {
+class CustomMethods {
+  static customButton({required VoidCallback onPressed, required String buttonText}) {
     return MaterialButton(
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
@@ -17,9 +16,16 @@ class CustomMethods{
     );
   }
 
-  static customTextField(
-      {required String labelText,
-      required TextEditingController textEditingController}) {
+  static customTextField({
+    required String labelText,
+    TextEditingController? textEditingController,
+    String? initialText,
+  }) {
+    final controller = textEditingController ?? TextEditingController();
+    if (initialText != null) {
+      controller.text = initialText; // Initialize text if initialText is provided
+    }
+
     return Container(
       width: 250,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -29,7 +35,7 @@ class CustomMethods{
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
       child: TextFormField(
-        controller: textEditingController,
+        controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: const TextStyle(color: Colors.black),
@@ -39,5 +45,4 @@ class CustomMethods{
       ),
     );
   }
-
 }
