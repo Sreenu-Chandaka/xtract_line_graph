@@ -35,7 +35,7 @@ class _ConnectServerState extends State<ConnectServer> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text('MQTT Settings', style: TextStyle(fontSize: 16)),
+        title: const Text('MQTT Settings', style: TextStyle(fontSize: 20)),
       ),
       body: SingleChildScrollView(
         child: Column(

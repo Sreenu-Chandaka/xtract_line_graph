@@ -38,7 +38,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const BackButton(),
-                  Text(widget.topic),
+                  Text(widget.topic,style: const TextStyle(fontSize: 20),),
                   PopupMenuButton(
                     surfaceTintColor: Colors.white,
                     onSelected: (String value) {
