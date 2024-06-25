@@ -63,11 +63,13 @@ class _ConnectServerState extends State<ConnectServer> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomMethods.customTextField(
+                          enable: controller.brokerConnected.isTrue?false:true,
                           labelText: 'MQTT Server Address',
                           textEditingController: controller.hostNameController,
                         ),
                         const SizedBox(height: 30),
                         CustomMethods.customTextField(
+                          enable: controller.brokerConnected.isTrue?false:true,
                           labelText: 'MQTT Server Port',
                           textEditingController: controller.serverPortController,
                         ),

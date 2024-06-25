@@ -20,6 +20,7 @@ class CustomMethods {
     required String labelText,
     TextEditingController? textEditingController,
     String? initialText,
+    bool? enable
   }) {
     final controller = textEditingController ?? TextEditingController();
     if (initialText != null) {
@@ -35,6 +36,7 @@ class CustomMethods {
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
       child: TextFormField(
+        enabled: enable,
         controller: controller,
         decoration: InputDecoration(
           labelText: labelText,

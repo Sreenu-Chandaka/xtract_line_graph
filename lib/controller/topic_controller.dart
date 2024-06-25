@@ -2,10 +2,9 @@ import 'package:get/get.dart';
 
 class TopicController extends GetxController {
   // Initialize as RxList
-  RxList<String> listOfTopics = ["hs1", "ss1", "hs2"].obs;
+  RxList<String> listOfTopics = ["hs1", "ss1"].obs;
 
-  // Initialize as RxBool
-  RxBool isEnabled = true.obs;
+
 
   // Method to add a topic to the list
   void addTopic(String topic) {
@@ -26,8 +25,5 @@ class TopicController extends GetxController {
     listOfTopics.remove(topic);
   }
 
-  // Method to update the topic state
-  void updateTopicState(bool value) {
-    isEnabled.value = value;
-  }
+ 
 }

@@ -23,7 +23,7 @@ class ConnectServerController extends GetxController {
   Future<void> connectToBroker() async {
     if (hostNameController.text.isEmpty) {
       Fluttertoast.showToast(
-        msg: 'Client Id should not be empty',
+        msg: 'Host Address should not be empty',
         gravity: ToastGravity.CENTER,
         textColor: Colors.white,
         webPosition: "center",
@@ -38,7 +38,7 @@ class ConnectServerController extends GetxController {
           keepAliveTime: 1000,
 
           portNumber: int.tryParse(serverPortController.text) ?? 1883,
-          //   password: passwordController.text,
+         
         );
         brokerConnected.value = await mqttController.onConnected();
       } else {
