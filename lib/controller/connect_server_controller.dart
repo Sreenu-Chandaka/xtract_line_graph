@@ -16,7 +16,8 @@ class ConnectServerController extends GetxController {
 
   var brokerConnected = false.obs;
   var receivedMessage = ''.obs;
-  var messageList =<MessageResponse>[].obs;
+  // var messageList =<MessageResponse>[].obs;
+  var messageMap = <String, List<MessageResponse>>{}.obs;
   var mqttController = MQTTController();
 
   
@@ -65,12 +66,26 @@ class ConnectServerController extends GetxController {
     
   }
 
-  void handleMessage(dynamic message) {
-    // Handle the received message here
-    debugPrint('Received message in Dashboard: $message');
-    // receivedMessage.value = '$topic: $message';
-    receivedMessage.value = '${message.topic}: ${message.message}';
-    messageList.add(message);
     
+
+  // Adjust handleMessage method
+  void handleMessage(MessageResponse message) {
+    String topic = message.topic;
+    debugPrint('Received message in Dashboard: $message');
+    
+    // Add message to the appropriate topic list
+    if (!messageMap.containsKey(topic)) {
+      messageMap[topic] = <MessageResponse>[].obs;
+    }
+    messageMap[topic]!.add(message);
   }
+
+  // void handleMessage(dynamic message) {
+  //   // Handle the received message here
+  //   debugPrint('Received message in Dashboard: $message');
+  //   // receivedMessage.value = '$topic: $message';
+  //   receivedMessage.value = '${message.topic}: ${message.message}';
+  //   messageList.add(message);
+    
+  // }
 }

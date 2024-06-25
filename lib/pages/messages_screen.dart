@@ -28,7 +28,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Obx(() {
-        var reversedMessages = controller.messageList.reversed.toList();
+        var messages = controller.messageMap[widget.topic] ?? [];
 
         return Column(
           children: [
@@ -38,7 +38,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const BackButton(),
-                  Text(widget.topic,style: const TextStyle(fontSize: 20),),
+                  Text(widget.topic, style: const TextStyle(fontSize: 20),),
                   PopupMenuButton(
                     surfaceTintColor: Colors.white,
                     onSelected: (String value) {
@@ -47,24 +47,25 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       } else if (value == "unsubscribe") {
                         controller.unSubscribeToTopic(topic: widget.topic);
                       } else {
-                        controller.messageList.clear();
+                        // Clear messages for this topic
+                        controller.messageMap[widget.topic]?.clear();
                       }
                     },
                     itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      const PopupMenuItem(
-                        value: "subscribe",
-                        child: Text('Subscribe'),
-                      ),
-                      const PopupMenuItem(
-                        value: "unsubscribe",
-                        child: Text("Unsubscribe"),
-                      ),
-                      const PopupMenuItem(
-                        value: "clear",
-                        child: Text("Clear"),
-                      ),
-                    ],
+                      <PopupMenuEntry<String>>[
+                        const PopupMenuItem(
+                          value: "subscribe",
+                          child: Text('Subscribe'),
+                        ),
+                        const PopupMenuItem(
+                          value: "unsubscribe",
+                          child: Text("Unsubscribe"),
+                        ),
+                        const PopupMenuItem(
+                          value: "clear",
+                          child: Text("Clear"),
+                        ),
+                      ],
                   ),
                 ],
               ),
@@ -80,10 +81,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           return MsgReceiverCard(
-                            message: reversedMessages[index],
+                            message: messages.reversed.toList()[index],
                           );
                         },
-                        childCount: reversedMessages.length,
+                        childCount: messages.length,
                       ),
                     ),
                   ),
