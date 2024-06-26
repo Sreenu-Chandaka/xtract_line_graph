@@ -21,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late GraphProvider graphProvider;
   late double _deviceHeight;
   late double _deviceWidth;
- 
+
   var controller = Get.put(ConnectServerController());
 
   // Define the ZoomPanBehavior
@@ -40,8 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
       DeviceOrientation.landscapeLeft,
     ]);
     graphProvider = Provider.of(context, listen: false);
-
-  
 
     Future.delayed(const Duration(milliseconds: 320), () {
       graphProvider.getGraph();
@@ -78,7 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   size: 20,
                 ),
                 Text(
-                  controller.brokerConnected.isTrue ? "Connected" : "Not connected",
+                  controller.brokerConnected.isTrue
+                      ? "Connected"
+                      : "Not connected",
                   style: const TextStyle(color: Colors.white),
                 ),
               ],
@@ -110,7 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.only(left: 24.0, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
-          children: [_graphWidget(), _dataTable()],
+          children: [
+            _graphWidget(),
+            _dataTable(),
+          ],
         ),
       ),
     );
@@ -124,21 +127,19 @@ class _MyHomePageState extends State<MyHomePage> {
           return StreamBuilder<List<LiveData>>(
             stream: graphProvider.sGraphs,
             builder: (context, snapshot) {
-              print(snapshot.error);
+              debugPrint(snapshot.error.toString());
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: CircularProgressIndicator(color: Colors.blue));
+                return const Center(
+                    child: CircularProgressIndicator(color: Colors.blue));
               }
 
               return SfCartesianChart(
-              
                 series: <LineSeries<LiveData, int>>[
                   LineSeries<LiveData, int>(
                     dataSource: snapshot.data!,
                     xValueMapper: (LiveData data, _) => data.time,
                     yValueMapper: (LiveData data, _) => data.speed,
-                    
                   ),
-                  
                 ],
                 primaryXAxis: const NumericAxis(
                   title: AxisTitle(text: 'Time (seconds)'),
@@ -146,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 primaryYAxis: const NumericAxis(
                   title: AxisTitle(text: 'Internet speed (Mbps)'),
                 ),
-                zoomPanBehavior: _zoomPanBehavior, // Add the zoomPanBehavior here
+                zoomPanBehavior: _zoomPanBehavior,
               );
             },
           );
@@ -157,47 +158,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Expanded _dataTable() {
     return Expanded(
-        flex: 1,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: Consumer<GraphProvider>(builder: (context, graphProvider, child) {
-            return StreamBuilder<List<LiveData>>(
-              stream: graphProvider.sGraphs,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: CircularProgressIndicator(color: Colors.blue));
-                }
-                return Column(
-                  children: [
-                    const Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [Text("Time"), Text("Speed")],
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [Text(snapshot.data![index].time.toString())],
-                            ),
-                            Column(
-                              children: [Text(snapshot.data![index].speed.toString())],
-                            )
-                          ],
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          }),
-        ));
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 32.0),
+        child:
+            Consumer<GraphProvider>(builder: (context, graphProvider, child) {
+          return StreamBuilder<List<LiveData>>(
+            stream: graphProvider.sGraphs,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                    child: CircularProgressIndicator(color: Colors.blue));
+              }
+              return Column(
+                children: [
+                  const Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [Text("Time"), Text("Speed")],
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(snapshot.data![index].time.toString())
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(snapshot.data![index].speed.toString())
+                            ],
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }),
+      ),
+    );
   }
-
 }
