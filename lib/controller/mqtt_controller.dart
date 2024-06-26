@@ -43,7 +43,7 @@ class MQTTController {
     mqttClient!.connectionMessage = connMessage;
 
     try {
-      await mqttClient!.connect("sreenu", "123");
+      await mqttClient!.connect();
       print("entered into connect clinet......///////////////////");
       if (mqttClient!.connectionStatus!.state == MqttConnectionState.connected) {
         print(mqttClient!.connectionStatus!.state);

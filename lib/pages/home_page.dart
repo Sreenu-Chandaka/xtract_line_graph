@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:xtract/helper/get_helper.dart';
+import 'package:xtract/widgets/toast_msg.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/live_data_model.dart';
 import '../providers/graph_provider.dart';
@@ -36,10 +38,20 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    print(GetHelper.getHost().isNotEmpty);
+    ToastMsg.msg("host status: ${GetHelper.getHost().isNotEmpty}");
+    print("host statsu..////////////////////////////////////");
+    if(GetHelper.getHost().isNotEmpty && GetHelper.getPort().isNotEmpty){
+      debugPrint("entered into if statement..////////////////////////");
+
+      controller.connectToBroker();
+      debugPrint("crossed the controller ..////////////////////////");
+    }
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
     graphProvider = Provider.of(context, listen: false);
+  
 
     Future.delayed(const Duration(milliseconds: 320), () {
       graphProvider.getGraph();

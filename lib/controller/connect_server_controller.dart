@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:xtract/helper/get_helper.dart';
 import 'package:xtract/model/message_model.dart';
+import 'package:xtract/widgets/toast_msg.dart';
 
 import 'mqtt_controller.dart';
 
 class ConnectServerController extends GetxController {
   var hostNameController = TextEditingController();
   var serverPortController = TextEditingController();
-  
-  
+
   var messageController = TextEditingController();
   var publishTopicController = TextEditingController();
 
@@ -20,26 +20,20 @@ class ConnectServerController extends GetxController {
   var messageMap = <String, List<MessageResponse>>{}.obs;
   var mqttController = MQTTController();
 
-  
   Future<void> connectToBroker() async {
-    if (hostNameController.text.isEmpty) {
-      Fluttertoast.showToast(
-        msg: 'Host Address should not be empty',
-        gravity: ToastGravity.CENTER,
-        textColor: Colors.white,
-        webPosition: "center",
-        webBgColor: "#b2dfdb",
-        timeInSecForIosWeb: 2,
-      );
+    if (hostNameController.text.isEmpty && GetHelper.getHost().isEmpty) {
+      ToastMsg.msg("hostAddress should not be empty");
     } else {
       if (brokerConnected.isFalse) {
         mqttController.initializeAndConnect(
-          hostName: hostNameController.text,
-
+          hostName: hostNameController.text.isNotEmpty
+              ? hostNameController.text
+              : GetHelper.getHost(),
           keepAliveTime: 1000,
-
-          portNumber: int.tryParse(serverPortController.text) ?? 1883,
-         
+          portNumber: int.tryParse(serverPortController.text.isNotEmpty
+                  ? serverPortController.text
+                  : GetHelper.getPort()) ??
+              1883,
         );
         brokerConnected.value = await mqttController.onConnected();
       } else {
@@ -63,16 +57,13 @@ class ConnectServerController extends GetxController {
 
   void unSubscribeToTopic({required String topic}) {
     mqttController.unSubscribeToMQTT(topic: topic);
-    
   }
-
-    
 
   // Adjust handleMessage method
   void handleMessage(MessageResponse message) {
     String topic = message.topic;
     debugPrint('Received message in Dashboard: $message');
-    
+
     // Add message to the appropriate topic list
     if (!messageMap.containsKey(topic)) {
       messageMap[topic] = <MessageResponse>[].obs;
@@ -86,6 +77,6 @@ class ConnectServerController extends GetxController {
   //   // receivedMessage.value = '$topic: $message';
   //   receivedMessage.value = '${message.topic}: ${message.message}';
   //   messageList.add(message);
-    
+
   // }
 }
