@@ -16,11 +16,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
   late ScrollController _scrollController;
   late ConnectServerController controller;
 
-
   @override
   void initState() {
     super.initState();
-   
+
     _scrollController = ScrollController();
     controller = Get.put(ConnectServerController());
     controller.subScribeToTopic(topic: widget.topic);
@@ -28,7 +27,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-      const double kDefault = 16.0;
+    const double kDefault = 16.0;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Obx(() {
@@ -43,22 +42,25 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const BackButton(color: Colors.white,),
+                    const BackButton(
+                      color: Colors.white,
+                    ),
                     Text(
                       widget.topic,
-                      style: const TextStyle(fontSize: 20,color: Colors.white,),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                     PopupMenuButton(
                       iconColor: Colors.white,
                       surfaceTintColor: Colors.white,
                       onSelected: (String value) {
                         if (value == "subscribe") {
-                          controller.plotGraphByTopic(widget.topic);
-                          // controller.subScribeToTopic(topic: widget.topic);
+                          controller.subScribeToTopic(topic: widget.topic);
                         } else if (value == "unsubscribe") {
                           controller.unSubscribeToTopic(topic: widget.topic);
                         } else {
-                          
                           controller.messageMap[widget.topic]?.clear();
                         }
                       },
@@ -103,69 +105,65 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 ],
               ),
             ),
-             Container(
+            Container(
               padding: const EdgeInsets.only(
-          left: kDefault,
-          right: kDefault,
-          top: kDefault / 2,
-          bottom: kDefault * 1.4),
+                  left: kDefault,
+                  right: kDefault,
+                  top: kDefault / 2,
+                  bottom: kDefault * 1.4),
               color: Colors.white,
               child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefault),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF4F5F5),
-                // color: Colors.grey.withOpacity(.23),
-                borderRadius: BorderRadius.circular(kDefault),
-              ),
-              child: Column(
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  TextFormField(
-                    controller: controller.publishTopicController,
-                    
-                    decoration: const InputDecoration(
-                       
-                        hintText: ' Enter Your Topic',
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: kDefault),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF4F5F5),
+                        // color: Colors.grey.withOpacity(.23),
+                        borderRadius: BorderRadius.circular(kDefault),
+                      ),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: controller.publishTopicController,
+                            decoration: const InputDecoration(
+                                hintText: ' Enter Your Topic',
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none),
+                          ),
+                          const Divider(),
+                          TextFormField(
+                            controller: controller.messageController,
+                            decoration: const InputDecoration(
+                                hintText: ' Enter Your Message',
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                const Divider(),
-                  TextFormField(
-                    controller:controller. messageController,
-                  
-                    decoration: const InputDecoration(
-                      
-                        hintText: ' Enter Your Message',
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none),
-                  ),
+                  InkWell(
+                    onTap: () {
+                      controller.publishMessage();
+                      controller.publishTopicController.clear();
+                      controller.messageController.clear();
+                    },
+                    child: Transform.rotate(
+                      angle: -pi / 50,
+                      child: const Icon(
+                        Icons.arrow_circle_up_sharp,
+                        color: Colors.blueAccent,
+                        size: kDefault * 2.4,
+                      ),
+                    ),
+                  )
                 ],
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              controller.publishMessage();
-              controller.publishTopicController.clear();
-              controller.messageController.clear();
-            },
-            child: Transform.rotate(
-              angle: -pi / 50,
-              child: const Icon(
-                Icons.arrow_circle_up_sharp,
-                color: Colors.blueAccent,
-                size: kDefault * 2.4,
-              ),
-            ),
-          )
-        ],
               ),
             )
           ],
@@ -173,6 +171,4 @@ class _MessagesScreenState extends State<MessagesScreen> {
       }),
     );
   }
-
- 
 }

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 class TopicController extends GetxController {
   // Initialize as RxList
-  RxList<String> listOfTopics = ["hs1", "ss1"].obs;
+  RxList<String> listOfTopics = ["mca/data"].obs;
 
 
 

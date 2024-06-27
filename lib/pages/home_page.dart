@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:xtract/helper/get_helper.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/live_data_model.dart';
 import 'connect_server_screen.dart';
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -17,7 +17,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   late double _deviceHeight;
   late double _deviceWidth;
 
@@ -31,19 +30,21 @@ class _MyHomePageState extends State<MyHomePage> {
     enableMouseWheelZooming: true,
     zoomMode: ZoomMode.xy,
   );
-
+  final _key = GlobalKey<ExpandableFabState>();
+  final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   @override
   void initState() {
     super.initState();
 
     if (GetHelper.getHost().isNotEmpty && GetHelper.getPort().isNotEmpty) {
       controller.connectToBroker();
-    
     }
+    controller.brokerConnected.isTrue
+        ? controller.subScribeToTopic(topic: "mca/data")
+        : null;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
-   
   }
 
   @override
@@ -106,50 +107,156 @@ class _MyHomePageState extends State<MyHomePage> {
               ))
         ],
       ),
+      // floatingActionButtonLocation: ExpandableFab.location,
+      // floatingActionButton: ExpandableFab(
+      //   key: _key,
+      //   // duration: const Duration(milliseconds: 500),
+      //   distance: 60.0,
+      //   type: ExpandableFabType.up,
+      //   pos: ExpandableFabPos.right,
+      //   // childrenOffset: const Offset(0, 20),
+      //   // fanAngle: 40,
+      //   // openButtonBuilder: RotateFloatingActionButtonBuilder(
+      //   //   child: const Icon(Icons.abc),
+      //   //   fabSize: ExpandableFabSize.large,
+      //   //   foregroundColor: Colors.amber,
+      //   //   backgroundColor: Colors.green,
+      //   //   shape: const CircleBorder(),
+      //   //   angle: 3.14 * 2,
+      //   // ),
+      //   // closeButtonBuilder: FloatingActionButtonBuilder(
+      //   //   size: 56,
+      //   //   builder: (BuildContext context, void Function()? onPressed,
+      //   //       Animation<double> progress) {
+      //   //     return IconButton(
+      //   //       onPressed: onPressed,
+      //   //       icon: const Icon(
+      //   //         Icons.check_circle_outline,
+      //   //         size: 40,
+      //   //       ),
+      //   //     );
+      //   //   },
+      //   // ),
+      //   overlayStyle: ExpandableFabOverlayStyle(
+      //     // color: Colors.black.withOpacity(0.5),
+      //     blur: 0,
+      //   ),
+      //   onOpen: () {
+      //     debugPrint('onOpen');
+      //   },
+      //   afterOpen: () {
+      //     debugPrint('afterOpen');
+      //   },
+      //   onClose: () {
+      //     debugPrint('onClose');
+      //   },
+      //   afterClose: () {
+      //     debugPrint('afterClose');
+      //   },
+      //   children: [
+      //     FloatingActionButton.small(
+      //       // shape: const CircleBorder(),
+      //       heroTag: null,
+      //       child: const Icon(Icons.edit),
+      //       onPressed: () {
+      //         const SnackBar snackBar = SnackBar(
+      //           content: Text("SnackBar"),
+      //         );
+      //         scaffoldKey.currentState?.showSnackBar(snackBar);
+      //       },
+      //     ),
+      //     FloatingActionButton.small(
+      //       // shape: const CircleBorder(),
+      //       heroTag: null,
+      //       child: const Icon(Icons.search),
+      //       onPressed: () {
+      //         Navigator.of(context).push(
+      //             MaterialPageRoute(builder: ((context) => ConnectServer())));
+      //       },
+      //     ),
+      //     FloatingActionButton.small(
+      //       // shape: const CircleBorder(),
+      //       heroTag: null,
+      //       child: const Icon(Icons.share),
+      //       onPressed: () {
+      //         final state = _key.currentState;
+      //         if (state != null) {
+      //           debugPrint('isOpen:${state.isOpen}');
+      //           state.toggle();
+      //         }
+      //       },
+      //     ),
+      //   ],
+      // ),
+     
       body: Padding(
         padding: const EdgeInsets.only(left: 24.0, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
-          children: [
-            _graphWidget(),
-      
-          ],
+          children: [_graphWidget()],
         ),
       ),
     );
   }
 
-Expanded _graphWidget() {
-  var controller = Get.find<ConnectServerController>();
-  return Expanded(
-    flex: 3,
-    child: Obx(() {
-      print(DateTime.now());
-      print("Datetime for every trigger ..//////////////////////");
-      if (controller.plotList.isEmpty) {
-        return const Center(
-            child: CircularProgressIndicator(color: Colors.blue));
-      }
+  Expanded _graphWidget() {
+    var controller = Get.find<ConnectServerController>();
+    return Expanded(
+      // flex: 3,
+      child: Obx(() {
+        print(DateTime.now());
+        print("Datetime for every trigger ..//////////////////////");
+        if (controller.plotList.isEmpty) {
+          return const Center(child: Text("No data"));
+          // CircularProgressIndicator(color: Colors.blue));
+        }
 
-      return SfCartesianChart(
-        series: <LineSeries<LiveData, int>>[
-          LineSeries<LiveData, int>(
-            dataSource: controller.plotList,
-            xValueMapper: (LiveData data, _) => data.xData,
-            yValueMapper: (LiveData data, _) => data.yData,
+        return SfCartesianChart(
+          series: <LineSeries<LiveData, int>>[
+            LineSeries<LiveData, int>(
+              dataSource: controller.plotList,
+              xValueMapper: (LiveData data, _) => data.xData,
+              yValueMapper: (LiveData data, _) => data.yData,
+            ),
+          ],
+          primaryXAxis: const NumericAxis(
+            title: AxisTitle(text: 'Index'),
           ),
+          primaryYAxis: const NumericAxis(
+            title: AxisTitle(text: 'Spectrum Data'),
+          ),
+          zoomPanBehavior: _zoomPanBehavior,
+        );
+      }),
+    );
+  }
+
+  Expanded floatingButton() {
+    return Expanded(
+      flex: 1,
+      child: ExpandableFab(
+        children: [
+          const Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
+          const Icon(Icons.close)
         ],
-        primaryXAxis: const NumericAxis(
-          title: AxisTitle(text: 'Index'),
+        openButtonBuilder: RotateFloatingActionButtonBuilder(
+          child: const Icon(Icons.account_box),
+          fabSize: ExpandableFabSize.regular,
+          foregroundColor: Colors.amber,
+          backgroundColor: Colors.green,
+          shape: const CircleBorder(),
         ),
-        primaryYAxis: const NumericAxis(
-          title: AxisTitle(text: 'Spectrum Data'),
+        closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+          child: const Icon(Icons.close),
+          fabSize: ExpandableFabSize.small,
+          foregroundColor: Colors.deepOrangeAccent,
+          backgroundColor: Colors.lightGreen,
+          shape: const CircleBorder(),
         ),
-        zoomPanBehavior: _zoomPanBehavior,
-      );
-    }),
-  );
-}
-
-
+      ),
+    );
+  }
 }
