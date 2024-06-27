@@ -1,8 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api, unused_field
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:xtract/helper/get_helper.dart';
@@ -39,9 +42,16 @@ class _MyHomePageState extends State<MyHomePage> {
     if (GetHelper.getHost().isNotEmpty && GetHelper.getPort().isNotEmpty) {
       controller.connectToBroker();
     }
-    controller.brokerConnected.isTrue
-        ? controller.subScribeToTopic(topic: "mca/data")
-        : null;
+ Timer.periodic(Duration(seconds: 3), (timer) {
+    if (controller.brokerConnected.isTrue) {
+      controller.subScribeToTopic(topic: "mca/data");
+      
+      timer.cancel(); // Stop the timer once subscribed
+    } else {
+      print("Waiting for broker connection...");
+    }
+  });
+    
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
@@ -231,32 +241,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Expanded floatingButton() {
-    return Expanded(
-      flex: 1,
-      child: ExpandableFab(
-        children: [
-          const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-          const Icon(Icons.close)
-        ],
-        openButtonBuilder: RotateFloatingActionButtonBuilder(
-          child: const Icon(Icons.account_box),
-          fabSize: ExpandableFabSize.regular,
-          foregroundColor: Colors.amber,
-          backgroundColor: Colors.green,
-          shape: const CircleBorder(),
-        ),
-        closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-          child: const Icon(Icons.close),
-          fabSize: ExpandableFabSize.small,
-          foregroundColor: Colors.deepOrangeAccent,
-          backgroundColor: Colors.lightGreen,
-          shape: const CircleBorder(),
-        ),
-      ),
-    );
-  }
 }

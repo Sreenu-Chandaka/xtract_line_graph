@@ -59,6 +59,7 @@ class MQTTController {
   }
 
   bool isConnectedToBroker() {
+     Fluttertoast.showToast(msg: mqttClient!.connectionStatus!.state.toString());
     print( mqttClient!.connectionStatus!.state );
     print("print connection state.///////////////////////////");
     return mqttClient!.connectionStatus!.state == MqttConnectionState.connected;
@@ -105,9 +106,11 @@ class MQTTController {
     print("topic.......///////////////////////////////");
     print(topic);
     if (isConnectedToBroker()) {
+      Fluttertoast.showToast(msg: "Subscribing to topic: $topic..,,,,,,,////");
       debugPrint('Subscribing to topic: $topic');
       mqttClient!.subscribe(topic, MqttQos.atMostOnce);
     } else {
+       Fluttertoast.showToast(msg: "unable to subscribe..,,,,,,,////");
       debugPrint('Cannot subscribe, not connected to the broker.');
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:get/get.dart';
 import 'package:xtract/helper/get_helper.dart';
@@ -59,6 +60,7 @@ class ConnectServerController extends GetxController {
 
   void subScribeToTopic({required String topic}) {
     mqttController.subscribeToMQTT(topic: topic);
+   Fluttertoast.showToast(msg: "message passed 3..,,,,,,,////");
   }
 
   void unSubscribeToTopic({required String topic}) {
