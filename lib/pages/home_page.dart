@@ -3,12 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:xtract/helper/get_helper.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/live_data_model.dart';
-import '../providers/graph_provider.dart';
 import 'connect_server_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -19,7 +17,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late GraphProvider graphProvider;
+
   late double _deviceHeight;
   late double _deviceWidth;
 
@@ -40,15 +38,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (GetHelper.getHost().isNotEmpty && GetHelper.getPort().isNotEmpty) {
       controller.connectToBroker();
+    
     }
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
-    graphProvider = Provider.of(context, listen: false);
-
-    Future.delayed(const Duration(milliseconds: 320), () {
-      graphProvider.getGraph();
-    });
+   
   }
 
   @override
@@ -117,99 +112,44 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.max,
           children: [
             _graphWidget(),
-            _dataTable(),
+      
           ],
         ),
       ),
     );
   }
 
-  Expanded _graphWidget() {
-    return Expanded(
-      flex: 3,
-      child: Consumer<GraphProvider>(
-        builder: (context, graphProvider, child) {
-          return StreamBuilder<List<LiveData>>(
-            stream: graphProvider.sGraphs,
-            builder: (context, snapshot) {
-              debugPrint(snapshot.error.toString());
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                    child: CircularProgressIndicator(color: Colors.blue));
-              }
+Expanded _graphWidget() {
+  var controller = Get.find<ConnectServerController>();
+  return Expanded(
+    flex: 3,
+    child: Obx(() {
+      print(DateTime.now());
+      print("Datetime for every trigger ..//////////////////////");
+      if (controller.plotList.isEmpty) {
+        return const Center(
+            child: CircularProgressIndicator(color: Colors.blue));
+      }
 
-              return SfCartesianChart(
-                series: <LineSeries<LiveData, int>>[
-                  LineSeries<LiveData, int>(
-                    dataSource: snapshot.data!,
-                    xValueMapper: (LiveData data, _) => data.time,
-                    yValueMapper: (LiveData data, _) => data.speed,
-                  ),
-                ],
-                primaryXAxis: const NumericAxis(
-                  title: AxisTitle(text: 'Time (seconds)'),
-                ),
-                primaryYAxis: const NumericAxis(
-                  title: AxisTitle(text: 'Internet speed (Mbps)'),
-                ),
-                zoomPanBehavior: _zoomPanBehavior,
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
+      return SfCartesianChart(
+        series: <LineSeries<LiveData, int>>[
+          LineSeries<LiveData, int>(
+            dataSource: controller.plotList,
+            xValueMapper: (LiveData data, _) => data.xData,
+            yValueMapper: (LiveData data, _) => data.yData,
+          ),
+        ],
+        primaryXAxis: const NumericAxis(
+          title: AxisTitle(text: 'Index'),
+        ),
+        primaryYAxis: const NumericAxis(
+          title: AxisTitle(text: 'Spectrum Data'),
+        ),
+        zoomPanBehavior: _zoomPanBehavior,
+      );
+    }),
+  );
+}
 
-  Expanded _dataTable() {
-    return Expanded(
-      flex: 1,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 32.0),
-        child:
-            Consumer<GraphProvider>(builder: (context, graphProvider, child) {
-          return StreamBuilder<List<LiveData>>(
-            stream: graphProvider.sGraphs,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                    child: CircularProgressIndicator(color: Colors.blue));
-              }
-              return Column(
-                children: [
-                  const Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [Text("Time"), Text("Speed")],
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              Text(snapshot.data![index].time.toString())
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(snapshot.data![index].speed.toString())
-                            ],
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        }),
-      ),
-    );
-  }
+
 }

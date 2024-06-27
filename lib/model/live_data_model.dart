@@ -1,6 +1,6 @@
 class LiveData {
-  final int time;
-  final int speed;
+  final int xData;
+  final double yData;
 
-  LiveData(this.time, this.speed);
+  LiveData({required this.xData, required this.yData});
 }

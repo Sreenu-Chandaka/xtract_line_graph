@@ -53,7 +53,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       surfaceTintColor: Colors.white,
                       onSelected: (String value) {
                         if (value == "subscribe") {
-                          controller.subScribeToTopic(topic: widget.topic);
+                          controller.plotGraphByTopic(widget.topic);
+                          // controller.subScribeToTopic(topic: widget.topic);
                         } else if (value == "unsubscribe") {
                           controller.unSubscribeToTopic(topic: widget.topic);
                         } else {
