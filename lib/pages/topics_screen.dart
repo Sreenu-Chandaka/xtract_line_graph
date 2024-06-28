@@ -34,42 +34,44 @@ class _TopicsScreen extends State<TopicsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-         backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        title: const Text('Topics', style: TextStyle(fontSize: 20)),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        foregroundColor: Colors.green,
-        backgroundColor: Colors.white,
-        onPressed: () {
-          _addTopicShowInputDialog(context);
-        },
-        label: const Row(
-          children: [
-            Icon(
-              Icons.add,
-              size: 26,
-            ),
-            Text(
-              "New",
-              style: TextStyle(fontSize: 20),
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+           backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          automaticallyImplyLeading: true,
+          title: const Text('Topics', style: TextStyle(fontSize: 20)),
         ),
-      ),
-      body: GetX<TopicController>(
-        builder: (controller) {
-          return ListView.builder(
-            itemCount: controller.listOfTopics.length,
-            itemBuilder: (context, index) {
-              return topicCard(controller.listOfTopics[index]);
-            },
-          );
-        },
+        floatingActionButton: FloatingActionButton.extended(
+          foregroundColor: Colors.green,
+          backgroundColor: Colors.white,
+          onPressed: () {
+            _addTopicShowInputDialog(context);
+          },
+          label: const Row(
+            children: [
+              Icon(
+                Icons.add,
+                size: 26,
+              ),
+              Text(
+                "New",
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+        ),
+        body: GetX<TopicController>(
+          builder: (controller) {
+            return ListView.builder(
+              itemCount: controller.listOfTopics.length,
+              itemBuilder: (context, index) {
+                return topicCard(controller.listOfTopics[index]);
+              },
+            );
+          },
+        ),
       ),
     );
   }

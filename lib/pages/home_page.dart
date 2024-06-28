@@ -7,8 +7,10 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:xtract/helper/get_helper.dart';
+import 'package:xtract/widgets/toast_msg.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/live_data_model.dart';
+import 'channels_grid.dart';
 import 'connect_server_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -73,107 +75,109 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
-        key: _key,
-        // duration: const Duration(milliseconds: 500),
-        distance: 60.0,
-        type: ExpandableFabType.up,
-        pos: ExpandableFabPos.right,
-        // childrenOffset: const Offset(0, 20),
-        // fanAngle: 40,
-        openButtonBuilder: RotateFloatingActionButtonBuilder(
-          heroTag: null,
-          child: const Icon(Icons.menu),
-          fabSize: ExpandableFabSize.regular,
-          foregroundColor: Colors.black,
-          backgroundColor: Colors.white,
-          shape: const CircleBorder(),
-          // angle: 3.14 * 2,
-        ),
-        closeButtonBuilder: FloatingActionButtonBuilder(
-          size: 56,
-          builder: (BuildContext context, void Function()? onPressed,
-              Animation<double> progress) {
-            return IconButton(
-              onPressed: onPressed,
-              icon: Icon(
-                Icons.close,
+    return SafeArea(
+      child: Scaffold(
+        floatingActionButtonLocation: ExpandableFab.location,
+        floatingActionButton: ExpandableFab(
+          key: _key,
+          // duration: const Duration(milliseconds: 500),
+          distance: _deviceHeight*0.1,
+          type: ExpandableFabType.up,
+          pos: ExpandableFabPos.right,
+          // childrenOffset: const Offset(0, 20),
+          // fanAngle: 40,
+          openButtonBuilder: RotateFloatingActionButtonBuilder(
+            heroTag: null,
+            child: const Icon(Icons.menu),
+            fabSize: ExpandableFabSize.regular,
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white,
+            shape: const CircleBorder(),
+            // angle: 3.14 * 2,
+          ),
+          closeButtonBuilder: FloatingActionButtonBuilder(
+            size: 56,
+            builder: (BuildContext context, void Function()? onPressed,
+                Animation<double> progress) {
+              return IconButton(
+                onPressed: onPressed,
+                icon: Icon(
+                  Icons.close,
+                  size: _deviceHeight * 0.04,
+                ),
+              );
+            },
+          ),
+          overlayStyle: const ExpandableFabOverlayStyle(
+            // color: Colors.black.withOpacity(0.5),
+            blur: 0,
+          ),
+          onOpen: () {
+            debugPrint('onOpen');
+          },
+          afterOpen: () {
+            debugPrint('afterOpen');
+          },
+          onClose: () {
+            debugPrint('onClose');
+          },
+          afterClose: () {
+            debugPrint('afterClose');
+          },
+          children: [
+            FloatingActionButton.small(
+              shape: const CircleBorder(),
+              backgroundColor: Colors.white,
+              heroTag: null,
+              child: Icon(
+                Icons.settings,
                 size: _deviceHeight * 0.04,
               ),
-            );
-          },
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> const ConnectServer()));
+                const SnackBar snackBar = SnackBar(
+                  content: Text("SnackBar"),
+                );
+                scaffoldKey.currentState?.showSnackBar(snackBar);
+              },
+            ),
+            FloatingActionButton.small(
+              shape: const CircleBorder(),
+              backgroundColor: Colors.white,
+              heroTag: null,
+              child: Icon(
+                Icons.grid_view_outlined,
+                size: _deviceHeight * 0.04,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: ((context) => const ChannelsGrid())));
+              },
+            ),
+            // FloatingActionButton.small(
+            //   shape: const CircleBorder(),
+            //   backgroundColor: Colors.white,
+            //   heroTag: null,
+            //   child: Icon(
+            //     Icons.share,
+            //     size: _deviceHeight * 0.04,
+            //   ),
+            //   onPressed: () {
+            //     final state = _key.currentState;
+            //     if (state != null) {
+            //       debugPrint('isOpen:${state.isOpen}');
+            //       state.toggle();
+            //     }
+            //   },
+            // ),
+          ],
         ),
-        overlayStyle: const ExpandableFabOverlayStyle(
-          // color: Colors.black.withOpacity(0.5),
-          blur: 0,
-        ),
-        onOpen: () {
-          debugPrint('onOpen');
-        },
-        afterOpen: () {
-          debugPrint('afterOpen');
-        },
-        onClose: () {
-          debugPrint('onClose');
-        },
-        afterClose: () {
-          debugPrint('afterClose');
-        },
-        children: [
-          FloatingActionButton.small(
-            shape: const CircleBorder(),
-            backgroundColor: Colors.white,
-            heroTag: null,
-            child: Icon(
-              Icons.settings,
-              size: _deviceHeight * 0.04,
-            ),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const ConnectServer()));
-              const SnackBar snackBar = SnackBar(
-                content: Text("SnackBar"),
-              );
-              scaffoldKey.currentState?.showSnackBar(snackBar);
-            },
+        body: Padding(
+          padding: const EdgeInsets.only(left: 24.0, top: 24),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [_graphWidget(), _gridData()],
           ),
-          FloatingActionButton.small(
-            shape: const CircleBorder(),
-            backgroundColor: Colors.white,
-            heroTag: null,
-            child: Icon(
-              Icons.search,
-              size: _deviceHeight * 0.04,
-            ),
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: ((context) => const ConnectServer())));
-            },
-          ),
-          FloatingActionButton.small(
-            shape: const CircleBorder(),
-            backgroundColor: Colors.white,
-            heroTag: null,
-            child: Icon(
-              Icons.share,
-              size: _deviceHeight * 0.04,
-            ),
-            onPressed: () {
-              final state = _key.currentState;
-              if (state != null) {
-                debugPrint('isOpen:${state.isOpen}');
-                state.toggle();
-              }
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 24.0, top: 24),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [_graphWidget(), _gridData()],
         ),
       ),
     );
@@ -292,13 +296,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller.brokerConnected.isTrue
                         ? "Connected"
                         : "Not connected",
-                    style: const TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black,fontSize: _deviceHeight*0.03),
                   ),
                 ],
               ),
               SizedBox(height: _deviceHeight * 0.03),
               AdvancedSwitch(
-                width: _deviceWidth * 0.05,
+                width: _deviceWidth * 0.08,
                 controller: _switchController,
                 activeColor: Colors.green,
                 inactiveColor: Colors.grey,
@@ -312,6 +316,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 enabled: true,
                 disabledOpacity: 0.5,
               ),
+               SizedBox(height: _deviceHeight * 0.03),
+              InkWell(
+                onTap: (){
+
+                },
+                child: Container(
+                   width:_deviceWidth * 0.09 ,
+                height: _deviceHeight * 0.06 ,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(16)
+                ),
+                  
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add,color: Colors.white,),
+                      Text("Add ROI",style: TextStyle(color:  Colors.white),)
+                    ],
+                  ),
+                ),
+              )
+            
             ],
           ),
         ));
