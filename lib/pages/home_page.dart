@@ -293,26 +293,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: controller.brokerConnected.isTrue
                         ? Colors.green
                         : Colors.red,
-                    size: 20,
+                     size:_deviceHeight * 0.04,
                   ),
                   Text(
                     controller.brokerConnected.isTrue
                         ? "Connected"
-                        : "Not connected",
+                        : "Not Connected",
                     style: TextStyle(
-                        color: Colors.black, fontSize: _deviceHeight * 0.03),
+                        color: Colors.black, fontSize: _deviceHeight * 0.032),
                   ),
                 ],
               ),
               SizedBox(height: _deviceHeight * 0.03),
               AdvancedSwitch(
-                height: _deviceHeight * 0.1,
-                width: _deviceHeight * 0.1,
+                height: _deviceHeight * 0.07,
+                width: _deviceHeight * 0.15,
                 controller: _switchController,
                 activeColor: Colors.green,
                 inactiveColor: Colors.grey,
-                activeChild: const Text('ROI'),
-                inactiveChild: const Text('ROI '),
+                activeChild: Text('ROI',style: TextStyle(
+                            color: Colors.white,
+                            fontSize: _deviceHeight * 0.025,
+                          )),
+                inactiveChild: Text('ROI',style: TextStyle(
+                            color: Colors.white,
+                            fontSize: _deviceHeight * 0.025,
+                          )),
                 // activeImage: AssetImage('assets/images/on.png'),
                 // inactiveImage: AssetImage('assets/images/off.png'),
                 borderRadius: const BorderRadius.all(Radius.circular(15)),
@@ -325,22 +331,23 @@ class _MyHomePageState extends State<MyHomePage> {
               InkWell(
                 onTap: () {},
                 child: Container(
-                  width: _deviceHeight * 0.09,
-                  height: _deviceHeight * 0.06,
+               height: _deviceHeight * 0.07,
+                width: _deviceHeight * 0.15,
                   decoration: BoxDecoration(
                       color: Colors.blue,
-                      borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(15)),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                    Icon(
                         Icons.add,
                         color: Colors.white,
+                        size:_deviceHeight * 0.04,
                       ),
                       Text("Add ROI",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: _deviceHeight * 0.01,
+                            fontSize: _deviceHeight * 0.025,
                           ))
                     ],
                   ),

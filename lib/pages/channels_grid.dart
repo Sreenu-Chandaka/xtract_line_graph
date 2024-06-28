@@ -23,9 +23,7 @@ class _ChannelsGridState extends State<ChannelsGrid> {
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    
     super.dispose();
   }
 final List<PlutoColumn> columns = <PlutoColumn>[
