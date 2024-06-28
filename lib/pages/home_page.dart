@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:xtract/helper/get_helper.dart';
-import 'package:xtract/widgets/toast_msg.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/live_data_model.dart';
 import 'channels_grid.dart';
@@ -22,14 +21,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late double _deviceHeight;
-  late double _deviceWidth;
+ 
   final _switchController = ValueNotifier<bool>(false);
   var controller = Get.put(ConnectServerController());
   final _key = GlobalKey<ExpandableFabState>();
   final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   double _min = 0.0;
   double _max = 10.0; // Default max value to ensure _min != _max
-  SfRangeValues _values = const SfRangeValues(0.0, 10.0); // Default range values
+  SfRangeValues _values =
+      const SfRangeValues(0.0, 10.0); // Default range values
 
   // Define the ZoomPanBehavior
   final ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(
@@ -74,14 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
-    _deviceWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         floatingActionButtonLocation: ExpandableFab.location,
         floatingActionButton: ExpandableFab(
           key: _key,
           // duration: const Duration(milliseconds: 500),
-          distance: _deviceHeight*0.1,
+          distance: _deviceHeight * 0.1,
           type: ExpandableFabType.up,
           pos: ExpandableFabPos.right,
           // childrenOffset: const Offset(0, 20),
@@ -134,7 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 size: _deviceHeight * 0.04,
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> const ConnectServer()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ConnectServer()));
                 const SnackBar snackBar = SnackBar(
                   content: Text("SnackBar"),
                 );
@@ -150,8 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 size: _deviceHeight * 0.04,
               ),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: ((context) => const ChannelsGrid())));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: ((context) => const ChannelsGrid())));
               },
             ),
             // FloatingActionButton.small(
@@ -296,13 +299,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller.brokerConnected.isTrue
                         ? "Connected"
                         : "Not connected",
-                    style: TextStyle(color: Colors.black,fontSize: _deviceHeight*0.03),
+                    style: TextStyle(
+                        color: Colors.black, fontSize: _deviceHeight * 0.03),
                   ),
                 ],
               ),
               SizedBox(height: _deviceHeight * 0.03),
               AdvancedSwitch(
-                width: _deviceWidth * 0.08,
+                height: _deviceHeight * 0.1,
+                width: _deviceHeight * 0.1,
                 controller: _switchController,
                 activeColor: Colors.green,
                 inactiveColor: Colors.grey,
@@ -312,33 +317,35 @@ class _MyHomePageState extends State<MyHomePage> {
                 // inactiveImage: AssetImage('assets/images/off.png'),
                 borderRadius: const BorderRadius.all(Radius.circular(15)),
 
-                height: 30.0,
+                
                 enabled: true,
                 disabledOpacity: 0.5,
               ),
-               SizedBox(height: _deviceHeight * 0.03),
+              SizedBox(height: _deviceHeight * 0.03),
               InkWell(
-                onTap: (){
-
-                },
+                onTap: () {},
                 child: Container(
-                   width:_deviceWidth * 0.09 ,
-                height: _deviceHeight * 0.06 ,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(16)
-                ),
-                  
-                  child: const Row(
+                  width: _deviceHeight * 0.09,
+                  height: _deviceHeight * 0.06,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.add,color: Colors.white,),
-                      Text("Add ROI",style: TextStyle(color:  Colors.white),)
+                      const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      Text("Add ROI",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: _deviceHeight * 0.01,
+                          ))
                     ],
                   ),
                 ),
               )
-            
             ],
           ),
         ));

@@ -52,6 +52,7 @@ dependencies:
   flutter_expandable_fab: ^2.0.0
   syncfusion_flutter_sliders: ^25.2.4
   flutter_advanced_switch: ^3.1.0
+  pluto_grid_plus: ^8.4.1
 
 dev_dependencies:
   flutter_test:
