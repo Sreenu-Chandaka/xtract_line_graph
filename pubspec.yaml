@@ -51,6 +51,7 @@ dependencies:
   get_storage: ^2.1.1
   flutter_expandable_fab: ^2.0.0
   syncfusion_flutter_sliders: ^25.2.4
+  flutter_advanced_switch: ^3.1.0
 
 dev_dependencies:
   flutter_test:
