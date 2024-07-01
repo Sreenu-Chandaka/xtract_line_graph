@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
@@ -56,8 +57,8 @@ class _ChannelsGridState extends State<ChannelsGrid> {
                 print('New Value: ${event.value}');
               },
               configuration: const PlutoGridConfiguration(),
-            ):const Center(
-              child: Text("No ROI added. Please go back, select, and add a new ROI value ",style: TextStyle(color: Colors.blue),),
+            ): Center(
+              child: Text("No ROI added. Please go back, select, and add a new ROI value ",style: TextStyle(color: Colors.blue,fontSize: MediaQuery.of(context).size.height * 0.03),),
             );}
           ),
         ),
