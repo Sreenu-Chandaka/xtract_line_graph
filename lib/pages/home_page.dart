@@ -6,6 +6,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:xtract/controller/topic_controller.dart';
 import 'package:xtract/helper/get_helper.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/live_data_model.dart';
@@ -24,6 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
  
   final _switchController = ValueNotifier<bool>(false);
   var controller = Get.put(ConnectServerController());
+  var topicController=Get.put(TopicController());
   final _key = GlobalKey<ExpandableFabState>();
   final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   double _min = 0.0;
@@ -50,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Timer.periodic(const Duration(seconds: 3), (timer) {
       if (controller.brokerConnected.isTrue) {
-        controller.subScribeToTopic(topic: "mca/data");
+        controller.subScribeToTopic(topic: topicController.listOfTopics.first);
 
         timer.cancel(); // Stop the timer once subscribed
       } else {
