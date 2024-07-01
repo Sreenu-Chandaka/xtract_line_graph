@@ -9,6 +9,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:xtract/controller/channel_grid_controller.dart';
 import 'package:xtract/controller/topic_controller.dart';
 import 'package:xtract/helper/get_helper.dart';
+import 'package:xtract/widgets/toast_msg.dart';
 import '../controller/connect_server_controller.dart';
 import '../model/data_entry.dart';
 import '../model/live_data_model.dart';
@@ -30,14 +31,16 @@ class _MyHomePageState extends State<MyHomePage> {
   var topicController = Get.put(TopicController());
   var gridController = Get.put(ChannelsGridController());
   final _key = GlobalKey<ExpandableFabState>();
-  final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+
   double _min = 0.0;
-  double _max = 10.0; // Default max value to ensure _min != _max
+  double _max = 10.0;
   late SfRangeValues _values;
   num startPoint = 0;
   num endPoint = 0;
 
- 
+  num maximumPeakValue = 0;
+  num totalPeaksCounts = 0;
+
   // Define the ZoomPanBehavior
   final ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(
     enablePinching: true,
@@ -138,12 +141,12 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ConnectServer()),
+                  MaterialPageRoute(
+                      builder: (context) => const ConnectServer()),
                 );
                 const SnackBar snackBar = SnackBar(
                   content: Text("SnackBar"),
                 );
-                scaffoldKey.currentState?.showSnackBar(snackBar);
               },
             ),
             FloatingActionButton.small(
@@ -156,7 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: ((context) => const ChannelsGrid())),
+                  MaterialPageRoute(
+                    builder: ((context) {
+                     
+                      return ChannelsGrid();
+                    }),
+                  ),
                 );
               },
             ),
@@ -209,9 +217,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 dragMode: SliderDragMode.both,
                 onChanged: (SfRangeValues values) {
                   setState(() {
-                    _values = values;
-                    startPoint = _values.start;
-                    endPoint = _values.end;
+                    startPoint = values.start;
+                    endPoint = values.end;
                   });
                 },
                 child: SizedBox(
@@ -281,11 +288,15 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Icon(
                   Icons.circle_rounded,
-                  color: controller.brokerConnected.isTrue ? Colors.green : Colors.red,
+                  color: controller.brokerConnected.isTrue
+                      ? Colors.green
+                      : Colors.red,
                   size: _deviceHeight * 0.04,
                 ),
                 Text(
-                  controller.brokerConnected.isTrue ? "Connected" : "Not Connected",
+                  controller.brokerConnected.isTrue
+                      ? "Connected"
+                      : "Not Connected",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: _deviceHeight * 0.032,
@@ -320,24 +331,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: _deviceHeight * 0.03),
             InkWell(
-             onTap: () {
-              // Create a new instance of DataEntry
-              DataEntry newDataEntry = DataEntry();
-              newDataEntry.channelStart = startPoint;
-              newDataEntry.channelEnd = endPoint;
-              newDataEntry.peakLabel=gridController.dataRowsList.length+1;
-             
-
-
-              // Add new dataEntry to ChannelsGridController
-              gridController.addData(newDataEntry);
-
-              // Reset startPoint and endPoint
-              setState(() {
-                startPoint = 0;
-                endPoint = 0;
-              });
-            },
+              onTap: () async {
+                if (_switchController.value == true) {
+                  await addDataToGrid();
+                }
+                return ToastMsg.msg(
+                    "Please Turn on ROI mode and Select Channel");
+              },
               child: Container(
                 height: _deviceHeight * 0.07,
                 width: _deviceHeight * 0.15,
@@ -363,11 +363,47 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
     );
   }
-  
+
+  Future<void> calculateMaxPeakAndTotalCounts() async {
+    List<double> filteredYData = controller.plotList
+        .where((data) {
+          double xValue = data.xData.toDouble();
+          return xValue >= startPoint && xValue <= endPoint;
+        })
+        .map((data) => data.yData.toDouble())
+        .toList();
+
+    maximumPeakValue = filteredYData.reduce((a, b) => a > b ? a : b);
+
+    totalPeaksCounts =
+        filteredYData.reduce((value, element) => value + element);
+  }
+
+  Future<void> addDataToGrid() async {
+    await calculateMaxPeakAndTotalCounts();
+    // Create a new instance of DataEntry
+    DataEntry newDataEntry = DataEntry();
+    newDataEntry.channelStart = startPoint;
+    newDataEntry.channelEnd = endPoint;
+    newDataEntry.peakLabel = gridController.dataRowsList.length + 1;
+    newDataEntry.peak = maximumPeakValue;
+    newDataEntry.totalCounts = totalPeaksCounts;
+
+    // Add new dataEntry to ChannelsGridController
+    gridController.addData(newDataEntry);
+
+    ToastMsg.msg("ROI Data added Successfully");
+
+    // Reset startPoint and endPoint
+    // setState(() {
+    //   startPoint = 0;
+    //   endPoint = 0;
+    // });
+  }
 }

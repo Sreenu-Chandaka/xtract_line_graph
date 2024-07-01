@@ -1,18 +1,14 @@
 class DataEntry {
-  int peakLabel;
-  num channelStart;
-  num channelEnd;
-  int peak;
-  int totalCounts;
-  String relatedROI;
-  int positionStdDev;
-  String fwhmDevKEV;
-  String fwhmDevChn;
-  String fwhmDevPct;
-  String areaStdDev;
-  String option;
-  String fit;
-  String identifiedPeak;
+  num peakLabel, channelStart, channelEnd, peak, totalCounts, positionStdDev;
+
+  String relatedROI,
+      fwhmDevKEV,
+      fwhmDevChn,
+      fwhmDevPct,
+      areaStdDev,
+      option,
+      fit,
+      identifiedPeak;
 
   DataEntry({
     this.peakLabel = 0,
