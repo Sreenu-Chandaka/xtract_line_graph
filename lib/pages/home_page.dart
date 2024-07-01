@@ -15,6 +15,7 @@ import '../models/data_entry.dart';
 import '../models/live_data_model.dart';
 import 'channels_grid.dart';
 import 'connect_server_screen.dart';
+import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -114,21 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
           ),
-          overlayStyle: const ExpandableFabOverlayStyle(
-            blur: 0,
-          ),
-          onOpen: () {
-            debugPrint('onOpen');
-          },
-          afterOpen: () {
-            debugPrint('afterOpen');
-          },
-          onClose: () {
-            debugPrint('onClose');
-          },
-          afterClose: () {
-            debugPrint('afterClose');
-          },
+       
           children: [
             FloatingActionButton.small(
               shape: const CircleBorder(),
@@ -170,15 +157,41 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 24.0, top: 24),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _graphWidget(),
-              _gridData(),
-            ],
-          ),
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+              StreamBuilder(
+                    stream: Stream.periodic(const Duration(seconds: 1)),
+                    builder: (context, snapshot) {
+                      return Text( "Live Time: ${DateFormat('hh:mm:ss a').format(DateTime.now())}",style: TextStyle(fontSize: _deviceHeight*0.03),);
+                    },
+                  ),
+                Text( "Start Time: ${DateFormat('hh:mm:ss a').format(DateTime.now())}",style: TextStyle(fontSize: _deviceHeight*0.03),),
+               Text( "Elapsed Time: ${DateFormat('hh:mm:ss').format(DateTime.now())}",style: TextStyle(fontSize: _deviceHeight*0.03),),
+                
+              ],),
+            ),
+            SizedBox(height: 12),
+            Padding(
+             padding: const EdgeInsets.only(left: 24.0, top: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _graphWidget(),
+                  _gridData(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -285,6 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(
                   Icons.circle_rounded,
