@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:xtract/controller/topic_controller.dart';
+import 'package:xtract/controllers/topic_controller.dart';
 import 'package:xtract/pages/messages_screen.dart';
 import 'package:xtract/widgets/custom_methods.dart';
 

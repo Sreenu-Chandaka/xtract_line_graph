@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
-import '../model/data_entry.dart';
+import '../models/data_entry.dart';
 
 class ChannelsGridController extends GetxController {
   RxList<PlutoColumn> dataColumnsList = <PlutoColumn>[].obs;

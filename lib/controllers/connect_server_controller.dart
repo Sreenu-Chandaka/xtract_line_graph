@@ -6,10 +6,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:xtract/helper/get_helper.dart';
 
-import 'package:xtract/model/message_model.dart';
+import 'package:xtract/models/message_model.dart';
 import 'package:xtract/widgets/toast_msg.dart';
 
-import '../model/live_data_model.dart';
+import '../models/live_data_model.dart';
 import 'mqtt_controller.dart';
 
 class ConnectServerController extends GetxController {

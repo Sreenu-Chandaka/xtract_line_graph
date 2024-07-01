@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:xtract/controller/connect_server_controller.dart';
+import 'package:xtract/controllers/connect_server_controller.dart';
 import 'package:xtract/helper/get_helper.dart';
 import 'package:xtract/pages/topics_screen.dart';
 import 'package:xtract/widgets/custom_methods.dart';

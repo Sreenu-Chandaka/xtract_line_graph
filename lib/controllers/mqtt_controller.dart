@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
-import '../model/message_model.dart';
+import '../models/message_model.dart';
 import 'connect_server_controller.dart';  // Adjust import as necessary
 
 class MQTTController {

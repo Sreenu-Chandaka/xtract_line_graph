@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:xtract/controller/connect_server_controller.dart';
+import 'package:xtract/controllers/connect_server_controller.dart';
 import '../widgets/message_receiver_card.dart';
 
 class MessagesScreen extends StatefulWidget {

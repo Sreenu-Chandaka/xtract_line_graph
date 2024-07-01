@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:xtract/model/message_model.dart'; 
+import 'package:xtract/models/message_model.dart'; 
 
 
 

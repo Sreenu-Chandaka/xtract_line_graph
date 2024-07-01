@@ -6,13 +6,13 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-import 'package:xtract/controller/channel_grid_controller.dart';
-import 'package:xtract/controller/topic_controller.dart';
+import 'package:xtract/controllers/channel_grid_controller.dart';
+import 'package:xtract/controllers/topic_controller.dart';
 import 'package:xtract/helper/get_helper.dart';
 import 'package:xtract/widgets/toast_msg.dart';
-import '../controller/connect_server_controller.dart';
-import '../model/data_entry.dart';
-import '../model/live_data_model.dart';
+import '../controllers/connect_server_controller.dart';
+import '../models/data_entry.dart';
+import '../models/live_data_model.dart';
 import 'channels_grid.dart';
 import 'connect_server_screen.dart';
 
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButtonLocation: ExpandableFab.location,
         floatingActionButton: ExpandableFab(
           key: _key,
-          distance: _deviceHeight * 0.1,
+          distance: _deviceHeight * 0.2,
           type: ExpandableFabType.up,
           pos: ExpandableFabPos.right,
           openButtonBuilder: RotateFloatingActionButtonBuilder(
@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: onPressed,
                 icon: Icon(
                   Icons.close,
-                  size: _deviceHeight * 0.04,
+                  size: _deviceHeight * 0.06,
                 ),
               );
             },
@@ -136,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
               heroTag: null,
               child: Icon(
                 Icons.settings,
-                size: _deviceHeight * 0.04,
+                size: _deviceHeight * 0.06,
               ),
               onPressed: () {
                 Navigator.push(
@@ -155,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
               heroTag: null,
               child: Icon(
                 Icons.grid_view_outlined,
-                size: _deviceHeight * 0.04,
+                size: _deviceHeight * 0.06,
               ),
               onPressed: () {
                 Navigator.of(context).push(
