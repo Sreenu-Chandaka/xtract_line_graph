@@ -10,6 +10,7 @@ import 'package:xtract/controller/channel_grid_controller.dart';
 import 'package:xtract/controller/topic_controller.dart';
 import 'package:xtract/helper/get_helper.dart';
 import '../controller/connect_server_controller.dart';
+import '../model/data_entry.dart';
 import '../model/live_data_model.dart';
 import 'channels_grid.dart';
 import 'connect_server_screen.dart';
@@ -27,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _switchController = ValueNotifier<bool>(false);
   var controller = Get.put(ConnectServerController());
   var topicController = Get.put(TopicController());
-  var girdController = Get.put(ChannelsGridController());
+  var gridController = Get.put(ChannelsGridController());
   final _key = GlobalKey<ExpandableFabState>();
   final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   double _min = 0.0;
@@ -324,9 +325,12 @@ class _MyHomePageState extends State<MyHomePage> {
               DataEntry newDataEntry = DataEntry();
               newDataEntry.channelStart = startPoint;
               newDataEntry.channelEnd = endPoint;
+              newDataEntry.peakLabel=gridController.dataRowsList.length+1;
+             
+
 
               // Add new dataEntry to ChannelsGridController
-              girdController.addData(newDataEntry);
+              gridController.addData(newDataEntry);
 
               // Reset startPoint and endPoint
               setState(() {
@@ -365,4 +369,5 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  
 }

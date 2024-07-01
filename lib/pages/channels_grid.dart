@@ -44,7 +44,7 @@ class _ChannelsGridState extends State<ChannelsGrid> {
         body: Container(
           padding: const EdgeInsets.all(15),
           child: Obx(
-            () => PlutoGrid(
+            (){return _controller.dataRowsList.isNotEmpty? PlutoGrid(
               columns: _controller.dataColumnsList.value,
               rows: _controller.dataRowsList.value,
               onLoaded: (PlutoGridOnLoadedEvent event) {
@@ -56,7 +56,9 @@ class _ChannelsGridState extends State<ChannelsGrid> {
                 print('New Value: ${event.value}');
               },
               configuration: const PlutoGridConfiguration(),
-            ),
+            ):const Center(
+              child: Text("No ROI added. Please go back, select, and add a new ROI value ",style: TextStyle(color: Colors.blue),),
+            );}
           ),
         ),
       ),
