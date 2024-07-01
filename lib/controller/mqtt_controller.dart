@@ -132,10 +132,7 @@ class MQTTController {
     final MqttPublishMessage payload = c[0].payload as MqttPublishMessage;
     final MessageResponse message = MessageResponse.fromPayload(topic, payload);
 
-    // Displaying topic and message separately
-    print("Topic: ${message.topic}");
-    print("Message: ${message.message}");
-
+   
     // Pass to controller
     ConnectServerController connectServerController = Get.find<ConnectServerController>();
     connectServerController.handleMessage(message);

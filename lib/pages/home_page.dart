@@ -6,6 +6,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:xtract/controller/channel_grid_controller.dart';
 import 'package:xtract/controller/topic_controller.dart';
 import 'package:xtract/helper/get_helper.dart';
 import '../controller/connect_server_controller.dart';
@@ -22,17 +23,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late double _deviceHeight;
- 
+
   final _switchController = ValueNotifier<bool>(false);
   var controller = Get.put(ConnectServerController());
-  var topicController=Get.put(TopicController());
+  var topicController = Get.put(TopicController());
+  var girdController = Get.put(ChannelsGridController());
   final _key = GlobalKey<ExpandableFabState>();
   final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   double _min = 0.0;
   double _max = 10.0; // Default max value to ensure _min != _max
-  SfRangeValues _values =
-      const SfRangeValues(0.0, 10.0); // Default range values
+  late SfRangeValues _values;
+  num startPoint = 0;
+  num endPoint = 0;
 
+ 
   // Define the ZoomPanBehavior
   final ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(
     enablePinching: true,
@@ -82,12 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButtonLocation: ExpandableFab.location,
         floatingActionButton: ExpandableFab(
           key: _key,
-          // duration: const Duration(milliseconds: 500),
           distance: _deviceHeight * 0.1,
           type: ExpandableFabType.up,
           pos: ExpandableFabPos.right,
-          // childrenOffset: const Offset(0, 20),
-          // fanAngle: 40,
           openButtonBuilder: RotateFloatingActionButtonBuilder(
             heroTag: null,
             child: const Icon(Icons.menu),
@@ -95,7 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
             foregroundColor: Colors.black,
             backgroundColor: Colors.white,
             shape: const CircleBorder(),
-            // angle: 3.14 * 2,
           ),
           closeButtonBuilder: FloatingActionButtonBuilder(
             size: 56,
@@ -111,7 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           overlayStyle: const ExpandableFabOverlayStyle(
-            // color: Colors.black.withOpacity(0.5),
             blur: 0,
           ),
           onOpen: () {
@@ -137,9 +136,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ConnectServer()));
+                  context,
+                  MaterialPageRoute(builder: (context) => const ConnectServer()),
+                );
                 const SnackBar snackBar = SnackBar(
                   content: Text("SnackBar"),
                 );
@@ -155,33 +154,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 size: _deviceHeight * 0.04,
               ),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: ((context) => const ChannelsGrid())));
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: ((context) => const ChannelsGrid())),
+                );
               },
             ),
-            // FloatingActionButton.small(
-            //   shape: const CircleBorder(),
-            //   backgroundColor: Colors.white,
-            //   heroTag: null,
-            //   child: Icon(
-            //     Icons.share,
-            //     size: _deviceHeight * 0.04,
-            //   ),
-            //   onPressed: () {
-            //     final state = _key.currentState;
-            //     if (state != null) {
-            //       debugPrint('isOpen:${state.isOpen}');
-            //       state.toggle();
-            //     }
-            //   },
-            // ),
           ],
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 24.0, top: 24),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            children: [_graphWidget(), _gridData()],
+            children: [
+              _graphWidget(),
+              _gridData(),
+            ],
           ),
         ),
       ),
@@ -204,8 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
               .map((data) => data.xData.toDouble())
               .reduce((value, element) => value > element ? value : element);
 
-          _values = SfRangeValues(
-              _min, _max); // Set initial range values based on _min and _max
+          _values = SfRangeValues(_min, _max);
         }
 
         return _switchController.value
@@ -223,6 +209,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (SfRangeValues values) {
                   setState(() {
                     _values = values;
+                    startPoint = _values.start;
+                    endPoint = _values.end;
                   });
                 },
                 child: SizedBox(
@@ -279,84 +267,102 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Expanded _gridData() {
     return Expanded(
-        flex: 1,
-        child: Obx(
-          () => Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.circle_rounded,
-                    color: controller.brokerConnected.isTrue
-                        ? Colors.green
-                        : Colors.red,
-                     size:_deviceHeight * 0.04,
-                  ),
-                  Text(
-                    controller.brokerConnected.isTrue
-                        ? "Connected"
-                        : "Not Connected",
-                    style: TextStyle(
-                        color: Colors.black, fontSize: _deviceHeight * 0.032),
-                  ),
-                ],
-              ),
-              SizedBox(height: _deviceHeight * 0.03),
-              AdvancedSwitch(
-                height: _deviceHeight * 0.07,
-                width: _deviceHeight * 0.15,
-                controller: _switchController,
-                activeColor: Colors.green,
-                inactiveColor: Colors.grey,
-                activeChild: Text('ROI',style: TextStyle(
-                            color: Colors.white,
-                            fontSize: _deviceHeight * 0.025,
-                          )),
-                inactiveChild: Text('ROI',style: TextStyle(
-                            color: Colors.white,
-                            fontSize: _deviceHeight * 0.025,
-                          )),
-                // activeImage: AssetImage('assets/images/on.png'),
-                // inactiveImage: AssetImage('assets/images/off.png'),
-                borderRadius: const BorderRadius.all(Radius.circular(15)),
-
-                
-                enabled: true,
-                disabledOpacity: 0.5,
-              ),
-              SizedBox(height: _deviceHeight * 0.03),
-              InkWell(
-                onTap: () {},
-                child: Container(
-               height: _deviceHeight * 0.07,
-                width: _deviceHeight * 0.15,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                    Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size:_deviceHeight * 0.04,
-                      ),
-                      Text("Add ROI",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: _deviceHeight * 0.025,
-                          ))
-                    ],
+      flex: 1,
+      child: Obx(
+        () => Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle_rounded,
+                  color: controller.brokerConnected.isTrue ? Colors.green : Colors.red,
+                  size: _deviceHeight * 0.04,
+                ),
+                Text(
+                  controller.brokerConnected.isTrue ? "Connected" : "Not Connected",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: _deviceHeight * 0.032,
                   ),
                 ),
-              )
-            ],
-          ),
-        ));
+              ],
+            ),
+            SizedBox(height: _deviceHeight * 0.03),
+            AdvancedSwitch(
+              height: _deviceHeight * 0.07,
+              width: _deviceHeight * 0.15,
+              controller: _switchController,
+              activeColor: Colors.green,
+              inactiveColor: Colors.grey,
+              activeChild: Text(
+                'ROI',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: _deviceHeight * 0.025,
+                ),
+              ),
+              inactiveChild: Text(
+                'ROI',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: _deviceHeight * 0.025,
+                ),
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              enabled: true,
+              disabledOpacity: 0.5,
+            ),
+            SizedBox(height: _deviceHeight * 0.03),
+            InkWell(
+             onTap: () {
+              // Create a new instance of DataEntry
+              DataEntry newDataEntry = DataEntry();
+              newDataEntry.channelStart = startPoint;
+              newDataEntry.channelEnd = endPoint;
+
+              // Add new dataEntry to ChannelsGridController
+              girdController.addData(newDataEntry);
+
+              // Reset startPoint and endPoint
+              setState(() {
+                startPoint = 0;
+                endPoint = 0;
+              });
+            },
+              child: Container(
+                height: _deviceHeight * 0.07,
+                width: _deviceHeight * 0.15,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: _deviceHeight * 0.04,
+                    ),
+                    Text(
+                      "Add ROI",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _deviceHeight * 0.025,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

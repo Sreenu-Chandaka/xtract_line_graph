@@ -70,7 +70,7 @@ class ConnectServerController extends GetxController {
   // Adjust handleMessage method
 void handleMessage(MessageResponse message) {
   String topic = message.topic;
-  debugPrint('Received message in Dashboard: $message');
+
 
   // Add message to the appropriate topic list
   if (!messageMap.containsKey(topic)) {
