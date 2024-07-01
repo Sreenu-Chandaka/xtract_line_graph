@@ -115,7 +115,6 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
           ),
-       
           children: [
             FloatingActionButton.small(
               shape: const CircleBorder(),
@@ -148,7 +147,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: ((context) {
-                     
                       return ChannelsGrid();
                     }),
                   ),
@@ -160,7 +158,6 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
-          
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -168,20 +165,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-              StreamBuilder(
+                  StreamBuilder(
                     stream: Stream.periodic(const Duration(seconds: 1)),
                     builder: (context, snapshot) {
-                      return Text( "Live Time: ${DateFormat('hh:mm:ss a').format(DateTime.now())}",style: TextStyle(fontSize: _deviceHeight*0.03),);
+                      return Text(
+                        "Live Time: ${DateFormat('hh:mm:ss a').format(DateTime.now())}",
+                        style: TextStyle(fontSize: _deviceHeight * 0.03),
+                      );
                     },
                   ),
-                Text( "Start Time: ${DateFormat('hh:mm:ss a').format(DateTime.now())}",style: TextStyle(fontSize: _deviceHeight*0.03),),
-               Text( "Elapsed Time: ${DateFormat('hh:mm:ss').format(DateTime.now())}",style: TextStyle(fontSize: _deviceHeight*0.03),),
-                
-              ],),
+                  Text(
+                    "Start Time: ${DateFormat('hh:mm:ss a').format(DateTime.now())}",
+                    style: TextStyle(fontSize: _deviceHeight * 0.03),
+                  ),
+                  Text(
+                    "Elapsed Time: ${DateFormat('hh:mm:ss').format(DateTime.now())}",
+                    style: TextStyle(fontSize: _deviceHeight * 0.03),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 12),
             Padding(
-             padding: const EdgeInsets.only(left: 24.0, top: 8),
+              padding: const EdgeInsets.only(left: 24.0, top: 8),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,8 +355,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (_switchController.value == true) {
                   await addDataToGrid();
                 }
-                return ToastMsg.msg(
-                    "Please Turn on ROI mode and Select Channel");
+                if (_switchController.value == false) {
+                  ToastMsg.msg("Please Turn on ROI mode and Select Channel");
+                }
               },
               child: Container(
                 height: _deviceHeight * 0.07,
